@@ -1,7 +1,11 @@
 #ifndef READ_H
 #define READ_H
 
+#include <fstream>
+
 #include "graph.h"
+
+using namespace std;
 
 /**
  * Clase de ayuda para leer el grafo desde un archivo,
@@ -10,17 +14,48 @@
  **/
 template <typename G>
 class Read {
-	typedef typename G::N N;
-	typedef typename G::E E;
+		public:
+				typedef typename G::N N;
+				typedef typename G::E E;
 
-	public:
-		Read(char* file) {
-            // TODO
-        }
+		private:
+				graph *g;
 
-		graph& getGraph() {
-            // TODO
-        }
+		public:
+				Read(char* file) {
+						fstream input(file, fstream::in);
+
+						g = new graph;
+
+						int n;
+
+						input >> n;
+
+						double x, y;
+
+						for (int i = 0; i < n; i++) {
+								input >> x >> y;
+
+								g->insert_node(x, y);
+						}
+
+						N node1, node2;
+						E weight;
+						bool directed;
+
+						while (input >> node1 >> node2 >> weight >> directed)
+								g->insert_edge(node1, node2, weight, directed);
+
+						input.close();
+				};
+
+				graph *getGraph() {
+						return g;
+				}
+
+				~Read() {
+						delete g;
+				}
 };
 
 #endif

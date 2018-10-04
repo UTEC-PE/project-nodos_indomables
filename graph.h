@@ -11,7 +11,7 @@ using namespace std;
 
 class Traits {
 	public:
-		typedef char N;
+		typedef int N;
 		typedef int E;
 };
 
@@ -30,8 +30,48 @@ class Graph {
 
     private:
         NodeSeq nodes;
+				EdgeSeq edges;
         NodeIte ni;
         EdgeIte ei;
+
+		public:
+				void insert_node(double x, double y) {
+						node *n = new node(x, y);
+
+						nodes.push_back(n);
+				}
+				void insert_edge(N node1, N node2, E weight, bool direction) {
+						edge *e = new edge(nodes.at(node1), nodes.at(node2), weight, direction);
+				}
+				void print_nodes() {
+						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
+								cout << (*ni)->get() << ' ';
+
+						cout << endl;
+				}
+				void print_edges() {
+						for (ni = nodes.begin(); ni != nodes.end(); ++ni) {
+								N current = (*ni)->get();
+
+								for (ei = (*ni)->edges.begin(); ei != (*ni)->edges.end(); ++ei)
+										if ((*ei)->nodes[0]->get() >= current && (*ei)->nodes[1]->get() >= current)
+												cout << (*ei)->nodes[0]->get() << ' '
+														 << (*ei)->nodes[1]->get() << ' '
+														 << (*ei)->get_data() << ' '
+														 << (*ei)->direction() << endl;
+								}
+
+						cout << endl;
+				}
+
+				~Graph() {
+						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
+								delete *ni;
+
+
+						for (ei = edges.begin(); ei != edges.end(); ++ei)
+								delete *ei;
+				}
 };
 
 typedef Graph<Traits> graph;
