@@ -21,8 +21,8 @@ class Edge {
             nodes[0] = node1;
             nodes[1] = node2;
 
-            node1->edges.push_back(this);
-            node2->edges.push_back(this);
+            node1->edges[node2->get()] = this;
+            node2->edges[node1->get()] = this;
         }
 
         E get_data() {
