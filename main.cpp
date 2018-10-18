@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "read.h"
+#include "undirected_graph.h"
 
 using namespace std;
 

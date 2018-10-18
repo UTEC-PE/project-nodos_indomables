@@ -10,9 +10,9 @@
 using namespace std;
 
 class Traits {
-	public:
-		typedef int N;
-		typedef int E;
+		public:
+				typedef int N;
+				typedef int E;
 };
 
 template <typename Tr>
@@ -30,7 +30,7 @@ class Graph {
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
 
-    private:
+		protected:
         NodeSeq nodes;
 				EdgeSeq edges;
         NodeIte ni;
@@ -65,6 +65,12 @@ class Graph {
 
 						cout << endl;
 				}
+
+				int degree(N n) {};
+				void bfs(self *g) {};
+				void dfs(self *g) {};
+				bool bipartite() {};
+
 
 				~Graph() {
 						for (ni = nodes.begin(); ni != nodes.end(); ++ni)

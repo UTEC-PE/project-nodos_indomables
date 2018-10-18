@@ -25,10 +25,10 @@ class Edge {
             node2->edges[node1->get()] = this;
         }
 
-        E get_data() {
+        inline E get_data() {
             return data;
         }
-        bool direction() {
+        inline bool direction() {
             return dir;
         }
 };

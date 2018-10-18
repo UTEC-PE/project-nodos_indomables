@@ -31,7 +31,7 @@ class Node {
             this->x = x;
             this->y = y;
         }
-        N get() {
+        inline N get() {
             return data;
         }
 };

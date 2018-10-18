@@ -25,7 +25,7 @@ class Read {
 				Read(char* file) {
 						fstream input(file, fstream::in);
 
-						g = new graph;
+						g = new G;
 
 						int n;
 

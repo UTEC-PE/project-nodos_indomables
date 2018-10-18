@@ -1,4 +1,7 @@
-all: main
+all: run
 
-main: main.cpp read.h graph.h node.h edge.h
+main: main.cpp *.h
 	g++ -std=c++11 main.cpp -o main
+
+run: main
+	./main
