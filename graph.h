@@ -2,7 +2,7 @@
 #define GRAPH_H
 
 #include <vector>
-//#include <list>
+#include <list>
 #include <map>
 #include <stack>
 
@@ -39,6 +39,7 @@ private:
 	EdgeIte ei;
 
 public:
+	list<N>*adj;
 	void insert_node(double x, double y) {
 		node *n = new node(x, y);
 
@@ -46,6 +47,7 @@ public:
 	}
 	void insert_edge(N node1, N node2, E weight, bool direction) {
 		edge *e = new edge(nodes.at(node1), nodes.at(node2), weight, direction);
+		adj[node1].push_back(node2);
 	}
 	void print_nodes() {
 		for (ni = nodes.begin(); ni != nodes.end(); ++ni)
@@ -67,40 +69,29 @@ public:
 
 		cout << endl;
 	}
-
-	// void delete_nodo(N node1) {
-	//
-	// }
-
-	// vector<bool> visited;
-	// void DFS_used(N node1){
-	// 	visited[node1]=true;
+	// 
+	// void DFS(){
+	// 	cout<<"ok";
+	// 	N node1=nodes.begin()->first;
+	// 	stack <N> stack;
+	// 	bool *visited=new bool[nodes.size()]();
 	// 	stack.push(node1);
-	// 	for (ei=edges.begin();ei!=edges.end();++ei){
-	// 		if (visited[ei]==false) {
-	// 			cout << ni->second->get() << ' ';
-	// 			DFS_used(ei);
+	// 	while (!stack.empty()){
+	// 		node1=stack.top();
+	// 		if (!visited[node1]){
+	// 			cout << node1 << ' ';
+	// 			visited[node1]=true;
 	// 		}
+	// 		for(ei=nodes[node1]->edges.begin();ei!=nodes[node1]->edges.end();++ei)
+	// 			if (!visited[ei->second->get_data()])
+	// 				stack.push(ei->second->get_data());
+	// 		stack.pop();
 	// 	}
+	// }
+	//
+	// void PRIM(N node1) {
 	//
 	// }
-
-	void DFS(N node1){
-		stack <int> pila;
-		vector <bool> visited;
-		pila.push(node1);
-		visited[node1]=true;
-		while (pila!=NULL){
-			
-		}
-		for (ni=node1; ni!=nodes.end();++ni){
-			cout << ni->second->get() << ' ';
-		}
-	}
-
-	void PRIM(N node) {
-
-	}
 
 	~Graph() {
 		for (ni = nodes.begin(); ni != nodes.end(); ++ni)
