@@ -1,10 +1,12 @@
 #ifndef D_GRAPH
 #define D_GRAPH
 
+#include <iostream>
+
 #include "graph.h"
 
-template <typedef T>
-class UndirectedGraph : public Graph {
+template <typename Tr>
+class DirectedGraph : public Graph <Tr> {
     public:
         typedef UndirectedGraph<Tr> self;
         typedef Node<self> node;
@@ -21,6 +23,12 @@ class UndirectedGraph : public Graph {
         int in_degree(N n_index) {};
         int out_degree(N n_index) {};
         bool strongly_connected() {};
+
+        // void test_print() {
+        //     cout << "Directed!" << endl;
+        // }
 };
+
+typedef DirectedGraph<Traits> directedGraph;
 
 #endif

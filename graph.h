@@ -42,8 +42,8 @@ class Graph {
 
 						nodes[n->get()] = n;
 				}
-				void insert_edge(N node1, N node2, E weight, bool direction) {
-						edge *e = new edge(nodes.at(node1), nodes.at(node2), weight, direction);
+				void insert_edge(N node1, N node2, E weight) {
+						edge *e = new edge(nodes.at(node1), nodes.at(node2), weight);
 				}
 				void print_nodes() {
 						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
@@ -59,8 +59,7 @@ class Graph {
 										if (ei->second->nodes[0]->get() >= current && ei->second->nodes[1]->get() >= current)
 												cout << ei->second->nodes[0]->get() << ' '
 														 << ei->second->nodes[1]->get() << ' '
-														 << ei->second->get_data() << ' '
-														 << ei->second->direction() << endl;
+														 << ei->second->get_data() << endl;
 								}
 
 						cout << endl;
@@ -70,6 +69,10 @@ class Graph {
 				void bfs(self *g) {};
 				void dfs(self *g) {};
 				bool bipartite() {};
+
+				// void test_print() {
+        //     cout << "Graph!" << endl;
+        // }
 
 
 				~Graph() {

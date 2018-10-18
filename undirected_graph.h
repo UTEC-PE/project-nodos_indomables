@@ -1,6 +1,8 @@
 #ifndef U_GRAPH
 #define U_GRAPH
 
+#include <iostream>
+
 #include "graph.h"
 
 template <typename Tr>
@@ -20,6 +22,12 @@ class UndirectedGraph : public Graph <Tr> {
 
         void kruskal(self *g) {};
         void prim(self *g) {};
+
+        // void test_print() {
+        //     cout << "Undirected!" << endl;
+        // }
 };
+
+typedef UndirectedGraph<Traits> undirectedGraph;
 
 #endif

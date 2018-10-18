@@ -4,6 +4,8 @@
 #include <fstream>
 
 #include "graph.h"
+#include "undirected_graph.h"
+#include "directed_graph.h"
 
 using namespace std;
 
@@ -19,19 +21,22 @@ class Read {
 				typedef typename G::E E;
 
 		private:
-				graph *g;
+				G *g;
 
 		public:
 				Read(char* file) {
 						fstream input(file, fstream::in);
 
-						g = new G;
+						int n, dir;
 
-						int n;
-
-						input >> n;
+						input >> n >> dir;
 
 						double x, y;
+
+						if (dir)
+								g = new directedGraph();
+						else
+								g = new undirectedGraph();
 
 						for (int i = 0; i < n; i++) {
 								input >> x >> y;
@@ -41,15 +46,14 @@ class Read {
 
 						N node1, node2;
 						E weight;
-						bool directed;
 
-						while (input >> node1 >> node2 >> weight >> directed)
-								g->insert_edge(node1, node2, weight, directed);
+						while (input >> node1 >> node2 >> weight)
+								g->insert_edge(node1, node2, weight);
 
 						input.close();
 				};
 
-				graph *getGraph() {
+				G *getGraph() {
 						return g;
 				}
 

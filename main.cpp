@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
 
     g->print_edges();
 
+    // g->test_print();
+
     cin.get();
     return EXIT_SUCCESS;
 }
