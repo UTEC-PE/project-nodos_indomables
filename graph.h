@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <map>
+#include <stack>
+#include <queue>
 
 #include "node.h"
 #include "edge.h"
@@ -37,8 +39,19 @@ class Graph {
         EdgeIte ei;
 
 		public:
+				Graph () {};
+				Graph (int n) {
+						while (n--)
+								insert_node();
+				};
+
+				void insert_node() {
+						node *n = new node(nodes.size());
+
+						nodes[n->get()] = n;
+				}
 				void insert_node(double x, double y) {
-						node *n = new node(x, y);
+						node *n = new node(nodes.size(), x, y);
 
 						nodes[n->get()] = n;
 				}
@@ -64,17 +77,42 @@ class Graph {
 
 						cout << endl;
 				}
-
+				inline int weight() {
+						return nodes.size();
+				}
 				inline int degree(N n) {
 						return nodes[n]->edges.size();
 				};
-				void bfs(self *g) {};
+				void bfs(N n, self *g) {
+						queue <N> root;
+						bool *visited = new bool [nodes.size()]();
+
+						root.push(n);
+
+						while (!root.empty()) {
+								for (auto i : nodes[root.front()]->edges)
+										if (!visited[i.first]) {
+												visited[i.first] = true;
+												root.push(i.first);
+
+												g->insert_edge(root.front(), i.first, i.second->get_data());
+										}
+
+								root.pop();
+						}
+
+						delete [] visited;
+				};
 				void dfs(self *g) {};
 				bool bipartite() {};
+				bool connected() {};
 
 				virtual void test_print() {
-            cout << "Graph!" << endl;
+						for (auto i : nodes)
+								cout << i.first << endl;
         }
+
+				self operator= (self g) {};
 
 
 				~Graph() {

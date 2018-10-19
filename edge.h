@@ -24,10 +24,15 @@ class Edge {
             node1->edges[node2->get()] = this;
             node2->edges[node1->get()] = this;
         }
-
         inline E get_data() {
             return data;
         }
+        void killSelf() {
+            nodes[1]->edges.erase(nodes[0]->get());
+            nodes[0]->edges.erase(nodes[1]->get());
+
+            delete this;
+        };
 };
 
 #endif

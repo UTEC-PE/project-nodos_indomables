@@ -23,9 +23,9 @@ class UndirectedGraph : public Graph <Tr> {
         void kruskal(self *g) {};
         void prim(self *g) {};
 
-        void test_print() {
-            cout << "Undirected!" << endl;
-        }
+        // void test_print() {
+        //     cout << "Undirected!" << endl;
+        // }
 };
 
 typedef UndirectedGraph<Traits> undirectedGraph;

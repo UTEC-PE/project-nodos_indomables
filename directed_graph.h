@@ -20,8 +20,10 @@ class DirectedGraph : public Graph <Tr> {
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
 
-        int in_degree(N n_index) {};
-        int out_degree(N n_index) {};
+        int in_degree(N n) {};
+        int out_degree(N n) {};
+        bool source_node(N n) {};
+        bool sink(N n) {};
         bool strongly_connected() {};
 
         void test_print() {

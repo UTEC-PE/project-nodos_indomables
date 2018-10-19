@@ -31,12 +31,12 @@ class Read {
 
 						input >> n >> dir;
 
-						double x, y;
-
 						if (dir)
 								g = new directedGraph();
 						else
 								g = new undirectedGraph();
+
+						double x, y;
 
 						for (int i = 0; i < n; i++) {
 								input >> x >> y;

@@ -1,12 +1,9 @@
 #ifndef NODE_H
 #define NODE_H
 
-#ifndef NODE_COUNTER
-#define NODE_COUNTER
+#include <random>
 
-char __node_counter = 0;
-
-#endif
+using namespace std;
 
 template <typename G>
 class Node {
@@ -23,9 +20,15 @@ class Node {
         double x;
         double y;
 
+
     public:
-        Node() : data(__node_counter++), x(0), y(0) {};
-        Node(double x, double y) : data(__node_counter++), x(x), y(y) {};
+        Node(N data) : data(data) {
+						random_device rd;
+
+						x = rd() / rd.max();
+            y = rd() / rd.max();
+        };
+        Node(N data, double x, double y) : data(data), x(x), y(y) {};
 
         int replace(double x, double y) {
             this->x = x;
@@ -34,6 +37,10 @@ class Node {
         inline N get() {
             return data;
         }
+        void killSelf() {
+            for (auto i : edges)
+                i.second->killSelf();
+        };
 };
 
 #endif

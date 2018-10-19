@@ -8,7 +8,7 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-    Read<graph> r("graph1.txt");
+    Read<graph> r("test.txt");
 
     auto *g = r.getGraph();
 
@@ -18,9 +18,17 @@ int main(int argc, char *argv[]) {
 
     g->print_edges();
 
-    g->test_print();
+    // g->test_print();
 
-    cout << g->degree(0);
+    graph h(g->weight());
+
+    g->bfs(0, &h);
+
+    h.print_nodes();
+
+    cout << endl;
+
+    h.print_edges();
 
     cin.get();
     return EXIT_SUCCESS;
