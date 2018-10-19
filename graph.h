@@ -65,14 +65,16 @@ class Graph {
 						cout << endl;
 				}
 
-				int degree(N n) {};
+				inline int degree(N n) {
+						return nodes[n]->edges.size();
+				};
 				void bfs(self *g) {};
 				void dfs(self *g) {};
 				bool bipartite() {};
 
-				// void test_print() {
-        //     cout << "Graph!" << endl;
-        // }
+				virtual void test_print() {
+            cout << "Graph!" << endl;
+        }
 
 
 				~Graph() {

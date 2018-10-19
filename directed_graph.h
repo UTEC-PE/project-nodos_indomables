@@ -8,7 +8,7 @@
 template <typename Tr>
 class DirectedGraph : public Graph <Tr> {
     public:
-        typedef UndirectedGraph<Tr> self;
+        typedef DirectedGraph<Tr> self;
         typedef Node<self> node;
         typedef Edge<self> edge;
 
@@ -24,9 +24,9 @@ class DirectedGraph : public Graph <Tr> {
         int out_degree(N n_index) {};
         bool strongly_connected() {};
 
-        // void test_print() {
-        //     cout << "Directed!" << endl;
-        // }
+        void test_print() {
+            cout << "Directed!" << endl;
+        }
 };
 
 typedef DirectedGraph<Traits> directedGraph;

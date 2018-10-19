@@ -1,7 +1,7 @@
 all: run
 
 main: main.cpp *.h
-	g++ -std=c++11 main.cpp -o main
+	g++ -std=c++14 main.cpp -o main
 
 run: main
 	./main

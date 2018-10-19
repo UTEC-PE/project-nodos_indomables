@@ -53,7 +53,7 @@ class Read {
 						input.close();
 				};
 
-				G *getGraph() {
+				auto getGraph() {
 						return g;
 				}
 
