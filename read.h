@@ -8,54 +8,54 @@
 using namespace std;
 
 /**
-* Clase de ayuda para leer el grafo desde un archivo,
-* no es necesario que la utilicen, podrían implementar su lector
-* desde su grafo o algún otro lado
-**/
+ * Clase de ayuda para leer el grafo desde un archivo,
+ * no es necesario que la utilicen, podrían implementar su lector
+ * desde su grafo o algún otro lado
+ **/
 template <typename G>
 class Read {
-public:
-	typedef typename G::N N;
-	typedef typename G::E E;
+		public:
+				typedef typename G::N N;
+				typedef typename G::E E;
 
-private:
-	graph * g;
+		private:
+				graph *g;
 
-public:
-	Read(char* file) {
-		fstream input(file, fstream::in);
+		public:
+				Read(char* file) {
+						fstream input(file, fstream::in);
 
-		g = new graph;
+						g = new graph;
 
-		int n;
+						int n;
 
-		input >> n;
+						input >> n;
 
-		double x, y;
+						double x, y;
 
-		for (int i = 0; i < n; i++) {
-			input >> x >> y;
+						for (int i = 0; i < n; i++) {
+								input >> x >> y;
 
-			g->insert_node(x, y);
-		}
+								g->insert_node(x, y);
+						}
 
-		N node1, node2;
-		E weight;
-		bool directed;
+						N node1, node2;
+						E weight;
+						bool directed;
 
-		while (input >> node1 >> node2 >> weight >> directed)
-			g->insert_edge(node1, node2, weight, directed);
+						while (input >> node1 >> node2 >> weight >> directed)
+								g->insert_edge(node1, node2, weight, directed);
 
-		input.close();
-	};
+						input.close();
+				};
 
-	graph *getGraph() {
-		return g;
-	}
+				graph *getGraph() {
+						return g;
+				}
 
-	~Read() {
-		delete g;
-	}
+				~Read() {
+						delete g;
+				}
 };
 
 #endif

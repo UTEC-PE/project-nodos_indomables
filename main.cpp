@@ -1,27 +1,25 @@
-//#include <GL/glut.h>
+// #include <GL/glut.h>
 #include <iostream>
 #include <fstream>
 
 #include "read.h"
-#include "node.h"
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-	cout<<"ok"<<endl;
-	Read<graph> r("graph1.txt");
+  std::cout << "ok" << '\n';
+    Read<graph> r("graph1.txt");
 
-	graph *g = r.getGraph();
-//	graph *h= new graph();
+    graph *g = r.getGraph();
 
-	g->print_nodes();
+    //g->print_nodes();
 
-	cout << endl;
+    //cout << endl;
 
-	g->print_edges();
+  //  g->print_edges();
+    g->DFS(0);
+    cout << endl;
+    cin.get();
 
-	//g->DFS();
-	//h->print_edges();
-	cin.get();
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
