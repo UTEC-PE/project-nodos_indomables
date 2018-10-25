@@ -7,17 +7,18 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-  std::cout << "ok" << '\n';
     Read<graph> r("graph1.txt");
 
     graph *g = r.getGraph();
-
+    graph h;
     //g->print_nodes();
 
     //cout << endl;
 
-  //  g->print_edges();
-    g->DFS(0);
+    // g->print_edges();
+    g->DFS(6, &h);
+    h.print_nodes();
+    h.print_edges();
     cout << endl;
     cin.get();
 

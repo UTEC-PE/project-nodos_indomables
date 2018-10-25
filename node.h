@@ -5,6 +5,7 @@
 #define NODE_COUNTER
 
 char __node_counter = 0;
+int i=0, j=0;
 
 #endif
 
@@ -24,7 +25,7 @@ class Node {
         double y;
 
     public:
-        Node() : data(__node_counter++), x(0), y(0) {};
+        Node(N n) : data(n), x(0), y(0) {};
         Node(double x, double y) : data(__node_counter++), x(x), y(y) {};
 
         int replace(double x, double y) {

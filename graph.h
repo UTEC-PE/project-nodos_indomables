@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <stack>
+#include <queue>
 
 #include "node.h"
 #include "edge.h"
@@ -38,6 +39,10 @@ class Graph {
         EdgeIte ei;
 
 		public:
+			void insert_node(N node1){
+				node *n=new node(node1);
+				nodes[n->get()] = n;
+			}
 				void insert_node(double x, double y) {
 						node *n = new node(x, y);
 
@@ -67,27 +72,28 @@ class Graph {
 						cout << endl;
 				}
 
-				//
-void DFS(N node1){
-	stack <N> stack;
-	bool *visited=new bool[nodes.size()]();
-	stack.push(node1);
-	while (!stack.empty()){
-		node1=stack.top();
-		stack.pop();
-		if (!visited[node1]){
-			cout << node1 << ' ';
-			visited[node1]=true;
+
+void dfs_recursive(N n, bool visited [], self *h){
+				std::cout << n << '\n';
+	visited[n]=true;
+	for (auto i: nodes[n]->edges){
+		if (!visited[i.first]){
+			h->insert_node(i.first);
+			h->insert_edge(n, i.first, i.second->get_data(), i.second->direction());
+
+			dfs_recursive(i.first, visited, h);
 		}
-		for(ei=nodes[node1]->edges.begin();ei!=nodes[node1]->edges.end();++ei)
-			if (!visited[ei->second->get_data()])
-				stack.push(ei->second->get_data());
 	}
 }
 
-void PRIM(N node1) {
-
+void DFS(N n, self *h) {
+	bool *visited=new bool [nodes.size()]();
+	h->insert_node(n);
+	visited[n]=true;
+	dfs_recursive(n, visited, h);
 }
+
+
 
 				~Graph() {
 						for (ni = nodes.begin(); ni != nodes.end(); ++ni)

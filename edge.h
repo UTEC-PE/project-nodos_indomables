@@ -17,7 +17,7 @@ class Edge {
 
     public:
         Edge(node *node1, node *node2, E data, bool dir) :
-        data(data), dir(dir) {
+        data(data), dir(dir){
             nodes[0] = node1;
             nodes[1] = node2;
 
@@ -31,6 +31,7 @@ class Edge {
         bool direction() {
             return dir;
         }
+        
 };
 
 #endif
