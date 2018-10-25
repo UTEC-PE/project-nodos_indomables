@@ -24,17 +24,14 @@ class Read {
 				G *g;
 
 		public:
-				Read(char* file) {
+				Read(string file) {
 						fstream input(file, fstream::in);
 
-						int n, dir;
+						int n;
 
-						input >> n >> dir;
+						input >> n;
 
-						if (dir)
-								g = new directedGraph();
-						else
-								g = new undirectedGraph();
+						g = new G();
 
 						double x, y;
 

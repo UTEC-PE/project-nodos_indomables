@@ -1,14 +1,14 @@
-#ifndef U_GRAPH
-#define U_GRAPH
+#ifndef D_GRAPH
+#define D_GRAPH
 
 #include <iostream>
 
 #include "graph.h"
 
 template <typename Tr>
-class UndirectedGraph : public Graph <Tr> {
+class DirectedGraph : public Graph <Tr> {
     public:
-        typedef UndirectedGraph<Tr> self;
+        typedef DirectedGraph<Tr> self;
         typedef Node<self> node;
         typedef Edge<self> edge;
 
@@ -20,14 +20,13 @@ class UndirectedGraph : public Graph <Tr> {
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
 
-        void kruskal(self *g) {};
-        void prim(self *g) {};
-
-        // void test_print() {
-        //     cout << "Undirected!" << endl;
-        // }
+        int in_degree(N n) {};
+        int out_degree(N n) {};
+        bool source_node(N n) {};
+        bool sink(N n) {};
+        bool strongly_connected() {};
 };
 
-typedef UndirectedGraph<Traits> undirectedGraph;
+typedef DirectedGraph<Traits> directedGraph;
 
 #endif

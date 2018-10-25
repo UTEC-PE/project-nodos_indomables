@@ -1,7 +1,15 @@
+CXX = g++
+SRCS = main.cpp disjoint.cpp
+
+HDIR = include
+INC = -I $(HDIR)
+CXXFLAGS = -std=c++14 $(INC)
+
 all: run
 
-main: main.cpp *.h
-	g++ -std=c++14 main.cpp -o main
+main: $(SRCS) $(HDIR)/*.h
+	$(CXX) $(CXXFLAGS) $(SRCS) -o $@
 
 run: main
+	@echo " Running..."
 	./main

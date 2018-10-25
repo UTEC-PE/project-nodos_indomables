@@ -8,6 +8,7 @@
 
 #include "node.h"
 #include "edge.h"
+#include "disjoint.h"
 
 using namespace std;
 
@@ -55,8 +56,8 @@ class Graph {
 
 						nodes[n->get()] = n;
 				}
-				void insert_edge(N node1, N node2, E weight) {
-						edge *e = new edge(nodes.at(node1), nodes.at(node2), weight);
+				void insert_edge(N node1, N node2, E weight = 1) {
+						new edge(nodes.at(node1), nodes.at(node2), weight);
 				}
 				void print_nodes() {
 						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
@@ -102,25 +103,84 @@ class Graph {
 						}
 
 						delete [] visited;
+				}
+				void bfs(N n,
+					function <void (N, N)> discover = [] (N source, N discovered) -> void {},
+					function <void (N, N)> previous = [] (N source, N visited) -> void {}) {
+						queue <N> root;
+						bool *visited = new bool [nodes.size()]();
+
+						root.push(n);
+						visited[n] = true;
+
+						while (!root.empty()) {
+								for (auto i : nodes[root.front()]->edges)
+										if (!visited[i.first]) {
+												visited[i.first] = true;
+												root.push(i.first);
+
+												discover(root.front(), i.first);
+										} else {
+												previous(root.front(), i.first);
+										}
+
+								root.pop();
+						}
+
+						delete [] visited;
 				};
 				void dfs(self *g) {};
-				bool bipartite() {};
-				bool connected() {};
+				bool bipartite() {
+						// if (nodes.empty())
+						// 		return true;
+						//
+						// queue <N> root;
+						// char *color = new char [nodes.size()]();
+						//
+						// root.push(nodes[0]);
+						// color[0] = 1;
+						//
+						// while (!root.empty()) {
+						// 		for (auto i : nodes[root.front()]->edges)
+						// 				if (!visited[i.first]) {
+						// 						visited[i.first] = visited[i.first] % 2 + 1;
+						// 						root.push(i.first);
+						// 				} else if ()
+						//
+						// 		root.pop();
+						// }
+						bool b = true;
+						int *color = new int[nodes.size()] ();
 
-				virtual void test_print() {
-						for (auto i : nodes)
-								cout << i.first << endl;
-        }
+						color[0] = 1;
 
-				self operator= (self g) {};
+						bfs(0,
+							[color] (N source, N discovered) -> void {
+								color[discovered] = color[source] == 1 ? 2 : 1;
+				    	},
+							[color, &b] (N source, N visited) -> void {
+								b = b && color[source] != color[visited];
+				    	}
+						);
 
+						delete [] color;
+
+						return b;
+				};
+				bool connected() {
+
+				};
+				bool bipartite_component(N n) {};
+				vector <N> component_heads() {};
 
 				~Graph() {
 						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
-								delete ni->second;
+								for (ei = ni->second->edges.begin(); ei != ni->second->edges.end(); ++ei)
+										if (ni->first < ei->first)
+												delete ei->second;
 
 
-						for (ei = edges.begin(); ei != edges.end(); ++ei)
+						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
 								delete ei->second;
 				}
 };
