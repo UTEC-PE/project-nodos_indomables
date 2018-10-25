@@ -106,7 +106,7 @@ class Graph {
 				}
 				void bfs(N n,
 					function <void (N, N)> discover = [] (N source, N discovered) -> void {},
-					function <void (N, N)> previous = [] (N source, N visited) -> void {}) {
+					function <void (N, N)> visited = [] (N source, N visited) -> void {}) {
 						queue <N> root;
 						bool *visited = new bool [nodes.size()]();
 
@@ -121,7 +121,7 @@ class Graph {
 
 												discover(root.front(), i.first);
 										} else {
-												previous(root.front(), i.first);
+												visited(root.front(), i.first);
 										}
 
 								root.pop();
@@ -131,24 +131,6 @@ class Graph {
 				};
 				void dfs(self *g) {};
 				bool bipartite() {
-						// if (nodes.empty())
-						// 		return true;
-						//
-						// queue <N> root;
-						// char *color = new char [nodes.size()]();
-						//
-						// root.push(nodes[0]);
-						// color[0] = 1;
-						//
-						// while (!root.empty()) {
-						// 		for (auto i : nodes[root.front()]->edges)
-						// 				if (!visited[i.first]) {
-						// 						visited[i.first] = visited[i.first] % 2 + 1;
-						// 						root.push(i.first);
-						// 				} else if ()
-						//
-						// 		root.pop();
-						// }
 						bool b = true;
 						int *color = new int[nodes.size()] ();
 
@@ -160,16 +142,13 @@ class Graph {
 				    	},
 							[color, &b] (N source, N visited) -> void {
 								b = b && color[source] != color[visited];
-				    	}
-						);
+				    	});
 
 						delete [] color;
 
 						return b;
 				};
-				bool connected() {
-
-				};
+				bool connected() {};
 				bool bipartite_component(N n) {};
 				vector <N> component_heads() {};
 

@@ -39,9 +39,12 @@ int main(int argc, char *argv[]) {
 
     // void (undirectedGraph::*f1)(undirectedGraph::N node1, undirectedGraph)::N node2);
     // f1 = &undirectedGraph::insert_edge;
-    //
-    //
-    cout << g->bipartite() << endl;
+    
+    g->bfs(0, [&h] (Traits::N source, Traits::N discovered) -> void {
+      h.insert_edge(source, discovered);
+    });
+
+    h.print_edges();
     //
     // cout << "Kruskal" << endl;
     // g->kruskal(&h);
