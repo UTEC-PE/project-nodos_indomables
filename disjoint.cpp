@@ -1,14 +1,12 @@
 #include "disjoint.h"
 
-template <typename T>
-void DisjointSet<T>::makeSet(T data) {
-    this->nodes[data] = new DNode<T> (data);
+void DisjointSet::makeSet(int data) {
+    this->nodes[data] = new DNode(data);
 }
 
-template <typename T>
-bool DisjointSet<T>::unionSet(T data1, T data2) {
-    DNode<T>* parent1 = findSet(data1);
-    DNode<T>* parent2 = findSet(data2);
+bool DisjointSet::unionSet(int data1, int data2) {
+    DNode* parent1 = findSet(data1);
+    DNode* parent2 = findSet(data2);
 
     if (parent1 != parent2) {
         if (parent1->rank >= parent2->rank) {
@@ -24,14 +22,12 @@ bool DisjointSet<T>::unionSet(T data1, T data2) {
     return false;
 }
 
-template <typename T>
-DNode<T>* DisjointSet<T>::findSet(T data) {
+DNode* DisjointSet::findSet(int data) {
     return findSet(this->nodes[data]);
 }
 
-template <typename T>
-DNode<T>* DisjointSet<T>::findSet(DNode<T>* node) {
-    DNode<T>* current = node;
+DNode* DisjointSet::findSet(DNode* node) {
+    DNode* current = node;
     while (current != current->parent)
         current = current->parent;
 

@@ -148,7 +148,16 @@ class Graph {
 
 						return b;
 				};
-				bool connected() {};
+				bool connected() {
+						DisjointSet d;
+								for (auto i : nodes) {
+										d.makeSet(i.first);
+								}
+
+						
+
+						return true;
+				};
 				bool bipartite_component(N n) {};
 				vector <N> component_heads() {};
 

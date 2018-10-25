@@ -8,17 +8,16 @@
 
 using namespace std;
 
-template <typename T>
 class DisjointSet {
     private:
-        map<T, DNode<T>*> nodes;
+        map<int, DNode*> nodes;
 
     public:
         DisjointSet() {};
-        void makeSet(T data);
-        bool unionSet(T data1, T data2);
-        DNode<T>* findSet(T data);
-        DNode<T>* findSet(DNode<T>* node);
+        void makeSet(int data);
+        bool unionSet(int data1, int data2);
+        DNode* findSet(int data);
+        DNode* findSet(DNode* node);
         ~DisjointSet() {};
 };
 

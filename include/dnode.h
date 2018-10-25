@@ -1,13 +1,12 @@
 #ifndef DNODE_H
 #define DNODE_H
 
-template <typename T>
 struct DNode {
     int rank;
-    T data;
-    DNode<T>* parent;
+    int data;
+    DNode* parent;
 
-    DNode<T>(T data) : data(data), rank(0), parent(this) {};
+    DNode(int data) : data(data), rank(0), parent(this) {};
 };
 
 #endif
