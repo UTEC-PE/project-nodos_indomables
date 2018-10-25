@@ -106,7 +106,7 @@ class Graph {
 				}
 				void bfs(N n,
 					function <void (N, N)> discover = [] (N source, N discovered) -> void {},
-					function <void (N, N)> visited = [] (N source, N visited) -> void {}) {
+					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
 						queue <N> root;
 						bool *visited = new bool [nodes.size()]();
 
@@ -121,7 +121,7 @@ class Graph {
 
 												discover(root.front(), i.first);
 										} else {
-												visited(root.front(), i.first);
+												visit(root.front(), i.first);
 										}
 
 								root.pop();

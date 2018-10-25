@@ -20,15 +20,6 @@ int main(int argc, char *argv[]) {
 
     auto g = r.getGraph();
 
-    // undirectedGraph *g = new undirectedGraph();
-    //
-    // g->insert_node();
-    // g->insert_node();
-    // g->insert_node();
-    //
-    // g->insert_edge(1, 2);
-    // g->insert_edge(1, 0);
-
     g->print_nodes();
 
     cout << endl;
@@ -39,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     // void (undirectedGraph::*f1)(undirectedGraph::N node1, undirectedGraph)::N node2);
     // f1 = &undirectedGraph::insert_edge;
-    
+
     g->bfs(0, [&h] (Traits::N source, Traits::N discovered) -> void {
       h.insert_edge(source, discovered);
     });
