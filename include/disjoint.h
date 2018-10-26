@@ -1,7 +1,6 @@
 #ifndef DISJOINT_H
 #define DISJOINT_H
 
-#include <iostream>
 #include <map>
 
 #include "dnode.h"

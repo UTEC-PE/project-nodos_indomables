@@ -6,7 +6,7 @@
 #include "graph.h"
 
 template <typename Tr>
-class DirectedGraph : public Graph <Tr> {
+class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
     public:
         typedef DirectedGraph<Tr> self;
         typedef Node<self> node;

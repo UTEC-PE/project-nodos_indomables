@@ -27,12 +27,11 @@ int main(int argc, char *argv[]) {
 
     g->print_edges();
 
-    cout << g->bipartite() << endl;
+    undirectedGraph h(g->weight());
 
-    // vector <Traits::N> result = g->component_heads();
-    //
-    // for (auto i : result)
-    //     cout << i << endl;
+    g->kruskal([&h] (Traits::N n0, Traits::N n1) -> void {
+        cout << n0 << ' ' << n1 << endl;
+    });
 
     cin.get();
     return EXIT_SUCCESS;
