@@ -6,7 +6,7 @@
 #include "graph.h"
 
 template <typename Tr>
-class DirectedGraph : public Graph <Tr> {
+class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
     public:
         typedef DirectedGraph<Tr> self;
         typedef Node<self> node;
@@ -27,6 +27,5 @@ class DirectedGraph : public Graph <Tr> {
         bool strongly_connected() {};
 };
 
-typedef DirectedGraph<Traits> directedGraph;
 
 #endif

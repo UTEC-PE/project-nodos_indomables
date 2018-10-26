@@ -1,5 +1,5 @@
 CXX = g++
-SRCS = main.cpp disjoint.cpp
+SRCS = main.cpp
 
 HDIR = include
 INC = -I $(HDIR)

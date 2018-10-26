@@ -1,6 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <iostream>
 #include <vector>
 #include <map>
 #include <stack>
@@ -9,19 +10,14 @@
 #include "node.h"
 #include "edge.h"
 #include "disjoint.h"
+#include "traits.h"
 
 using namespace std;
 
-class Traits {
-		public:
-				typedef int N;
-				typedef int E;
-};
-
-template <typename Tr>
+template <typename Tr, typename G>
 class Graph {
     public:
-        typedef Graph<Tr> self;
+        typedef G self;
         typedef Node<self> node;
         typedef Edge<self> edge;
 
@@ -35,7 +31,6 @@ class Graph {
 
 		protected:
         NodeSeq nodes;
-				EdgeSeq edges;
         NodeIte ni;
         EdgeIte ei;
 
@@ -45,19 +40,18 @@ class Graph {
 						while (n--)
 								insert_node();
 				};
+				virtual void insert_node() {
+						node *n = new node(this->nodes.size());
 
-				void insert_node() {
-						node *n = new node(nodes.size());
-
-						nodes[n->get()] = n;
+						this->nodes[n->get()] = n;
 				}
-				void insert_node(double x, double y) {
-						node *n = new node(nodes.size(), x, y);
+				virtual void insert_node(double x, double y) {
+						node *n = new node(this->nodes.size(), x, y);
 
-						nodes[n->get()] = n;
+						this->nodes[n->get()] = n;
 				}
-				void insert_edge(N node1, N node2, E weight = 1) {
-						new edge(nodes.at(node1), nodes.at(node2), weight);
+				virtual void insert_edge(N node1, N node2, E weight = 1) {
+						new edge(this->nodes.at(node1), this->nodes.at(node2), weight);
 				}
 				void print_nodes() {
 						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
@@ -84,7 +78,7 @@ class Graph {
 				inline int degree(N n) {
 						return nodes[n]->edges.size();
 				};
-				void bfs(N n,
+				void bfs(N n = 0,
 					function <void (N, N)> discovery = [] (N source, N discovered) -> void {},
 					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
 						queue <N> root;
@@ -109,7 +103,7 @@ class Graph {
 
 						delete [] visited;
 				};
-				void dfs(N n,
+				void dfs(N n = 0,
 					function <void (N, N)> discovery = [] (N source, N discovered) -> void {},
 					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
 				  	bool *visited = new bool [nodes.size()]();
@@ -238,7 +232,5 @@ class Graph {
 								delete ei->second;
 				}
 };
-
-typedef Graph<Traits> graph;
 
 #endif
