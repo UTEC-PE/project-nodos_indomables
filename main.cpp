@@ -26,15 +26,7 @@ int main(int argc, char *argv[]) {
 
     g->print_edges();
 
-    // cout << g->connected() << endl;
-
-    undirectedGraph h(g->weight());
-
-    g->dfs(0, [&h] (Traits::N source, Traits::N discovered) -> void {
-        h.insert_edge(source, discovered);
-    });
-
-    h.print_edges();
+    
 
     cin.get();
     return EXIT_SUCCESS;
