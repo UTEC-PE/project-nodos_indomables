@@ -20,55 +20,13 @@ int main(int argc, char *argv[]) {
 
     auto g = r.getGraph();
 
-    // undirectedGraph *g = new undirectedGraph();
-    //
-    // g->insert_node();
-    // g->insert_node();
-    // g->insert_node();
-    //
-    // g->insert_edge(1, 2);
-    // g->insert_edge(1, 0);
-
     g->print_nodes();
 
     cout << endl;
 
     g->print_edges();
 
-    undirectedGraph h(g->weight());
-
-    // void (undirectedGraph::*f1)(undirectedGraph::N node1, undirectedGraph)::N node2);
-    // f1 = &undirectedGraph::insert_edge;
-    
-    g->bfs(0, [&h] (Traits::N source, Traits::N discovered) -> void {
-      h.insert_edge(source, discovered);
-    });
-
-    h.print_edges();
-    //
-    // cout << "Kruskal" << endl;
-    // g->kruskal(&h);
-    // cout << "End Kruskal" << endl;
-    //
-    // g->print_edges();
-
-    // DisjointSet<int> d;
-
-    // int n = 10;
-
-    // while (n--)
-    //     d.makeSet(n);
-
-    // d.unionSet(1, 3);
-    // d.unionSet(2, 4);
-    // d.unionSet(3, 4);
-
-    // if (d.findSet(1) == d.findSet(2))
-    //     cout << "Same set" << endl;
-    // else
-    //     cout << "Different set" << endl;
-
-    // cout << d.findSet(1) << endl;
+    cout << g->connected() << endl;
 
 
     cin.get();

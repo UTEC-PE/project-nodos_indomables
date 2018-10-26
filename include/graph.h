@@ -84,29 +84,9 @@ class Graph {
 				inline int degree(N n) {
 						return nodes[n]->edges.size();
 				};
-				void bfs(N n, self *g) {
-						queue <N> root;
-						bool *visited = new bool [nodes.size()]();
-
-						root.push(n);
-
-						while (!root.empty()) {
-								for (auto i : nodes[root.front()]->edges)
-										if (!visited[i.first]) {
-												visited[i.first] = true;
-												root.push(i.first);
-
-												g->insert_edge(root.front(), i.first, i.second->get_data());
-										}
-
-								root.pop();
-						}
-
-						delete [] visited;
-				}
 				void bfs(N n,
-					function <void (N, N)> discover = [] (N source, N discovered) -> void {},
-					function <void (N, N)> visited = [] (N source, N visited) -> void {}) {
+					function <void (N, N)> discovery = [] (N source, N discovered) -> void {},
+					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
 						queue <N> root;
 						bool *visited = new bool [nodes.size()]();
 
@@ -119,9 +99,9 @@ class Graph {
 												visited[i.first] = true;
 												root.push(i.first);
 
-												discover(root.front(), i.first);
+												discovery(root.front(), i.first);
 										} else {
-												visited(root.front(), i.first);
+												visit(root.front(), i.first);
 										}
 
 								root.pop();
@@ -129,29 +109,124 @@ class Graph {
 
 						delete [] visited;
 				};
-				void dfs(self *g) {};
+				void dfs(N n,
+					function <void (N, N)> discovery = [] (N source, N discovered) -> void {},
+					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
+				  	bool *visited = new bool [nodes.size()]();
+
+				  	visited[n] = true;
+
+				  	dfs_recursive(n, visited, discovery, visit);
+				}
 				bool bipartite() {
-						bool b = true;
+						DisjointSet <N> d;
+
+						for (auto i : nodes)
+								d.makeSet(i.first);
+
+
 						int *color = new int[nodes.size()] ();
 
-						color[0] = 1;
+						for (auto i : nodes) {
+								if (i.first == d.findSet(i.first)->data) {
+										bool b = true;
 
-						bfs(0,
-							[color] (N source, N discovered) -> void {
-								color[discovered] = color[source] == 1 ? 2 : 1;
-				    	},
-							[color, &b] (N source, N visited) -> void {
-								b = b && color[source] != color[visited];
-				    	});
+										bfs(i.first,
+											[color, &d] (N src, N disc) -> void {
+												color[disc] = color[src] == 1 ? 2 : 1;
+												d.unionSet(src, src);
+								    	},
+											[color, &b] (N src, N vst) -> void {
+												b = b && color[src] != color[vst];
+								    	});
+
+										if (!b) {
+												delete [] color;
+
+												return false;
+										}
+								}
+						}
 
 						delete [] color;
 
-						return b;
-				};
-				bool connected() {};
-				bool bipartite_component(N n) {};
-				vector <N> component_heads() {};
+						return true;
 
+						// bool b = true;
+						// int *color = new int[nodes.size()] ();
+						//
+						// color[0] = 1;
+						//
+						// for (auto i : component_heads())
+						// bfs(0,
+						// 	[color] (N s, N d) -> void {
+						// 		color[d] = color[s] == 1 ? 2 : 1;
+				    // 	},
+						// 	[color, &b] (N s, N v) -> void {
+						// 		b = b && color[s] != color[v];
+				    // 	});
+						//
+						// delete [] color;
+						//
+						// return b;
+				};
+				bool connected() {
+						DisjointSet <N> d;
+
+						for (auto i : nodes)
+								d.makeSet(i.first);
+
+						dfs(nodes.begin()->first, [&d] (N src, N disc) -> void {
+								d.unionSet(src, disc);
+						});
+
+						auto i = nodes.begin();
+
+						for (++i; i != nodes.end(); ++i)
+								if (i->first == d.findSet(i->first)->data)
+										return false;
+
+						return true;
+				};
+				vector <N> component_heads() {
+						DisjointSet <N> d;
+
+						for (auto i : nodes)
+								d.makeSet(i.first);
+
+						vector <N> result;
+
+						for (auto i : nodes) {
+								if (i.first == d.findSet(i.first)->data) {
+										result.push_back(i.first);
+
+										dfs(i.first, [&d] (N src, N disc) -> void {
+												d.unionSet(src, disc);
+										});
+								}
+						}
+
+						return result;
+				};
+
+		private:
+				void dfs_recursive(N n, bool *visited,
+					function <void (N, N)> discovery = [] (N source, N discovered) -> void {},
+					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
+						visited[n] = true;
+
+						for (auto i : nodes[n]->edges) {
+								if (!visited[i.first]) {
+										discovery(n, i.first);
+
+										dfs_recursive(i.first, visited, discovery, visit);
+								} else {
+										visit(n, i.first);
+								}
+						}
+				}
+
+		public:
 				~Graph() {
 						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
 								for (ei = ni->second->edges.begin(); ei != ni->second->edges.end(); ++ei)
