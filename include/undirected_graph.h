@@ -33,6 +33,8 @@ class UndirectedGraph : public Graph <Tr> {
         void kruskal(self *g) {
 
 
+
+
             // cout << "Inside" << endl;
             // vector <edge *> sorted_edges;
             //

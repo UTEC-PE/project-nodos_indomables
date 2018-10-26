@@ -119,35 +119,95 @@ class Graph {
 				  	dfs_recursive(n, visited, discovery, visit);
 				}
 				bool bipartite() {
-						bool b = true;
+						DisjointSet <N> d;
+
+						for (auto i : nodes)
+								d.makeSet(i.first);
+
+
 						int *color = new int[nodes.size()] ();
 
-						color[0] = 1;
+						for (auto i : nodes) {
+								if (i.first == d.findSet(i.first)->data) {
+										bool b = true;
 
-						bfs(0,
-							[color] (N source, N discovered) -> void {
-								color[discovered] = color[source] == 1 ? 2 : 1;
-				    	},
-							[color, &b] (N source, N visited) -> void {
-								b = b && color[source] != color[visited];
-				    	});
+										bfs(i.first,
+											[color, &d] (N src, N disc) -> void {
+												color[disc] = color[src] == 1 ? 2 : 1;
+												d.unionSet(src, src);
+								    	},
+											[color, &b] (N src, N vst) -> void {
+												b = b && color[src] != color[vst];
+								    	});
+
+										if (!b) {
+												delete [] color;
+
+												return false;
+										}
+								}
+						}
 
 						delete [] color;
 
-						return b;
+						return true;
+
+						// bool b = true;
+						// int *color = new int[nodes.size()] ();
+						//
+						// color[0] = 1;
+						//
+						// for (auto i : component_heads())
+						// bfs(0,
+						// 	[color] (N s, N d) -> void {
+						// 		color[d] = color[s] == 1 ? 2 : 1;
+				    // 	},
+						// 	[color, &b] (N s, N v) -> void {
+						// 		b = b && color[s] != color[v];
+				    // 	});
+						//
+						// delete [] color;
+						//
+						// return b;
 				};
 				bool connected() {
-						// DisjointSet d;
-						// 		for (auto i : nodes) {
-						// 				d.makeSet(i.first);
-						// 		}
+						DisjointSet <N> d;
 
+						for (auto i : nodes)
+								d.makeSet(i.first);
 
+						dfs(nodes.begin()->first, [&d] (N src, N disc) -> void {
+								d.unionSet(src, disc);
+						});
+
+						auto i = nodes.begin();
+
+						for (++i; i != nodes.end(); ++i)
+								if (i->first == d.findSet(i->first)->data)
+										return false;
 
 						return true;
 				};
-				bool bipartite_component(N n) {};
-				vector <N> component_heads() {};
+				vector <N> component_heads() {
+						DisjointSet <N> d;
+
+						for (auto i : nodes)
+								d.makeSet(i.first);
+
+						vector <N> result;
+
+						for (auto i : nodes) {
+								if (i.first == d.findSet(i.first)->data) {
+										result.push_back(i.first);
+
+										dfs(i.first, [&d] (N src, N disc) -> void {
+												d.unionSet(src, disc);
+										});
+								}
+						}
+
+						return result;
+				};
 
 		private:
 				void dfs_recursive(N n, bool *visited,

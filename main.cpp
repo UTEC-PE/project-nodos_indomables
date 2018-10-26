@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 // Buscar graficador Cinder
 
@@ -26,7 +27,12 @@ int main(int argc, char *argv[]) {
 
     g->print_edges();
 
-    
+    cout << g->bipartite() << endl;
+
+    // vector <Traits::N> result = g->component_heads();
+    //
+    // for (auto i : result)
+    //     cout << i << endl;
 
     cin.get();
     return EXIT_SUCCESS;
