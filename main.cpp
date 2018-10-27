@@ -17,8 +17,7 @@ void func(N base, N discovered) {
 using namespace std;
 
 int main(int argc, char *argv[]) {
-    Read<undirectedGraph> r("test.txt");
-
+    Read<directedGraph> r("graph2.txt");
     auto g = r.getGraph();
 
     g->print_nodes();
@@ -26,12 +25,6 @@ int main(int argc, char *argv[]) {
     cout << endl;
 
     g->print_edges();
-
-    undirectedGraph h(g->weight());
-
-    g->kruskal([&h] (Traits::N n0, Traits::N n1) -> void {
-        cout << n0 << ' ' << n1 << endl;
-    });
 
     cin.get();
     return EXIT_SUCCESS;

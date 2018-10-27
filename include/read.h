@@ -21,7 +21,7 @@ class Read {
 				typedef typename G::E E;
 
 		private:
-				undirectedGraph *g;
+				G *g;
 
 		public:
 				Read(string file) {
@@ -31,7 +31,7 @@ class Read {
 
 						input >> n;
 
-						g = new undirectedGraph();
+						g = new G();
 
 						double x, y;
 

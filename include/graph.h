@@ -40,35 +40,30 @@ class Graph {
 						while (n--)
 								insert_node();
 				};
-				virtual void insert_node() {
+				void insert_node() {
 						node *n = new node(this->nodes.size());
 
 						this->nodes[n->get()] = n;
 				}
-				virtual void insert_node(double x, double y) {
+				void insert_node(double x, double y) {
 						node *n = new node(this->nodes.size(), x, y);
 
 						this->nodes[n->get()] = n;
 				}
-				virtual void insert_edge(N node1, N node2, E weight = 1) {
+				void insert_edge(N node1, N node2, E weight = 1) {
 						new edge(this->nodes.at(node1), this->nodes.at(node2), weight);
 				}
 				void print_nodes() {
-						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
-								cout << ni->second->get() << ' ';
+						for (auto i : nodes)
+								cout << i.second->get() << ' ';
 
 						cout << endl;
 				}
 				void print_edges() {
-						for (ni = nodes.begin(); ni != nodes.end(); ++ni) {
-								N current = ni->second->get();
-
-								for (ei = ni->second->edges.begin(); ei != ni->second->edges.end(); ++ei)
-										if (ei->second->nodes[0]->get() >= current && ei->second->nodes[1]->get() >= current)
-												cout << ei->second->nodes[0]->get() << ' '
-														 << ei->second->nodes[1]->get() << ' '
-														 << ei->second->get_data() << endl;
-								}
+						for (auto i : nodes)
+								for (auto j : i.second->edges)
+										if (i.first < j.first)
+												cout << i.first << ' ' << j.first << ' ' << j.second->get_data() << endl;
 
 						cout << endl;
 				}
@@ -76,11 +71,11 @@ class Graph {
 						return nodes.size();
 				}
 				inline int degree(N n) {
-						return nodes[n]->edges.size();
+						return nodes[n]->degree();
 				};
 				void bfs(N n = 0,
-					function <void (N, N)> discovery = [] (N source, N discovered) -> void {},
-					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
+					function <void (N, N)> discoveredVertex = [] (N source, N discovered) -> void {},
+					function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {}) {
 						queue <N> root;
 						bool *visited = new bool [nodes.size()]();
 
@@ -93,9 +88,9 @@ class Graph {
 												visited[i.first] = true;
 												root.push(i.first);
 
-												discovery(root.front(), i.first);
+												discoveredVertex(root.front(), i.first);
 										} else {
-												visit(root.front(), i.first);
+												visitedVertex(root.front(), i.first);
 										}
 
 								root.pop();
@@ -104,13 +99,14 @@ class Graph {
 						delete [] visited;
 				};
 				void dfs(N n = 0,
-					function <void (N, N)> discovery = [] (N source, N discovered) -> void {},
-					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
+					function <void (N, N)> discoverVertex = [] (N source, N discovered) -> void {},
+					function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {},
+					function <void (N)> postVisitVertex = [] (N source) -> void {}) {
 				  	bool *visited = new bool [nodes.size()]();
 
 				  	visited[n] = true;
 
-				  	dfs_recursive(n, visited, discovery, visit);
+				  	dfs_recursive(n, visited, discoverVertex, visitedVertex, postVisitVertex);
 				}
 				bool bipartite() {
 						DisjointSet <N> d;
@@ -145,42 +141,15 @@ class Graph {
 						delete [] color;
 
 						return true;
-
-						// bool b = true;
-						// int *color = new int[nodes.size()] ();
-						//
-						// color[0] = 1;
-						//
-						// for (auto i : component_heads())
-						// bfs(0,
-						// 	[color] (N s, N d) -> void {
-						// 		color[d] = color[s] == 1 ? 2 : 1;
-				    // 	},
-						// 	[color, &b] (N s, N v) -> void {
-						// 		b = b && color[s] != color[v];
-				    // 	});
-						//
-						// delete [] color;
-						//
-						// return b;
 				};
 				bool connected() {
-						DisjointSet <N> d;
+						int v = 1;
 
-						for (auto i : nodes)
-								d.makeSet(i.first);
-
-						dfs(nodes.begin()->first, [&d] (N src, N disc) -> void {
-								d.unionSet(src, disc);
+						dfs(nodes.begin()->first, [&v] (N src, N disc) -> void {
+								v++;
 						});
 
-						auto i = nodes.begin();
-
-						for (++i; i != nodes.end(); ++i)
-								if (i->first == d.findSet(i->first)->data)
-										return false;
-
-						return true;
+						return v == nodes.size();
 				};
 				vector <N> component_heads() {
 						DisjointSet <N> d;
@@ -205,31 +174,22 @@ class Graph {
 
 		private:
 				void dfs_recursive(N n, bool *visited,
-					function <void (N, N)> discovery = [] (N source, N discovered) -> void {},
-					function <void (N, N)> visit = [] (N source, N visited) -> void {}) {
+					function <void (N, N)> discoverVertex = [] (N source, N discovered) -> void {},
+					function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {},
+					function <void (N)> postVisitVertex = [] (N source) -> void {}) {
 						visited[n] = true;
 
 						for (auto i : nodes[n]->edges) {
 								if (!visited[i.first]) {
-										discovery(n, i.first);
+										discoverVertex(n, i.first);
 
-										dfs_recursive(i.first, visited, discovery, visit);
+										dfs_recursive(i.first, visited, discoverVertex, visitedVertex, postVisitVertex);
 								} else {
-										visit(n, i.first);
+										visitedVertex(n, i.first);
 								}
 						}
-				}
 
-		public:
-				~Graph() {
-						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
-								for (ei = ni->second->edges.begin(); ei != ni->second->edges.end(); ++ei)
-										if (ni->first < ei->first)
-												delete ei->second;
-
-
-						for (ni = nodes.begin(); ni != nodes.end(); ++ni)
-								delete ei->second;
+						postVisitVertex(n);
 				}
 };
 

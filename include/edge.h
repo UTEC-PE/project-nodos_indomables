@@ -7,13 +7,16 @@ template <typename G>
 class Edge {
     public:
         typedef typename G::E E;
+        typedef typename G::E N;
         typedef typename G::node node;
+        typedef typename G::Constructor Constructor;
 
         node *nodes[2];
 
-    private:
+    protected:
         E data;
         bool dir;
+        Constructor cns;
 
     public:
         Edge(node *node1, node *node2, E data) :
@@ -21,18 +24,14 @@ class Edge {
             nodes[0] = node1;
             nodes[1] = node2;
 
-            node1->edges[node2->get()] = this;
-            node2->edges[node1->get()] = this;
+            cns(this, node1, node2);
+
+            node1->d++;
+            node2->d++;
         }
         inline E get_data() {
             return data;
         }
-        void killSelf() {
-            nodes[1]->edges.erase(nodes[0]->get());
-            nodes[0]->edges.erase(nodes[1]->get());
-
-            delete this;
-        };
 };
 
 #endif

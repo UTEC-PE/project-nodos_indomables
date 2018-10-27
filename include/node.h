@@ -14,6 +14,7 @@ class Node {
         typedef typename G::EdgeSeq EdgeSeq;
 
         EdgeSeq edges;
+        int d;
 
     private:
         N data;
@@ -30,17 +31,22 @@ class Node {
         };
         Node(N data, double x, double y) : data(data), x(x), y(y) {};
 
-        int replace(double x, double y) {
+        void replace(double x, double y) {
             this->x = x;
             this->y = y;
         }
         inline N get() {
             return data;
         }
-        void killSelf() {
-            for (auto i : edges)
-                i.second->killSelf();
-        };
+        inline int degree() {
+            return d;
+        }
+        inline int in_degree() {
+            return d - edges.size();
+        }
+        inline int out_degree() {
+            return edges.size();
+        }
 };
 
 #endif

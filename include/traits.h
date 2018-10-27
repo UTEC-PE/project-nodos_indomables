@@ -6,5 +6,4 @@ class Traits {
 				typedef int N;
 				typedef int E;
 };
-
 #endif
