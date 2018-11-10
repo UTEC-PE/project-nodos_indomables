@@ -6,13 +6,12 @@
 #include <map>
 #include <stack>
 #include <queue>
+#include <ostream>
 
 #include "node.h"
 #include "edge.h"
 #include "disjoint.h"
 #include "traits.h"
-
-using namespace std;
 
 template <typename Tr, typename G>
 class Graph {
@@ -22,8 +21,8 @@ class Graph {
         typedef Edge<self> edge;
 
         typedef typename Tr::N N;
-        typedef map<N, node*> NodeSeq;
-        typedef map<N, edge*> EdgeSeq;
+        typedef std::map<N, node*> NodeSeq;
+        typedef std::map<N, edge*> EdgeSeq;
 
         typedef typename Tr::E E;
         typedef typename NodeSeq::iterator NodeIte;
@@ -38,7 +37,7 @@ class Graph {
 				Graph () {};
 				Graph (int n) {
 						while (n--)
-								insert_node();
+								this->insert_node();
 				};
 				void insert_node() {
 						node *n = new node(this->nodes.size());
@@ -54,36 +53,36 @@ class Graph {
 						new edge(this->nodes.at(node1), this->nodes.at(node2), weight);
 				}
 				void print_nodes() {
-						for (auto i : nodes)
-								cout << i.second->get() << ' ';
+						for (auto i : this->nodes)
+								std::cout << i.second->get() << ' ';
 
-						cout << endl;
+						std::cout << std::endl;
 				}
 				void print_edges() {
-						for (auto i : nodes)
+						for (auto i : this->nodes)
 								for (auto j : i.second->edges)
 										if (i.first < j.first)
-												cout << i.first << ' ' << j.first << ' ' << j.second->get_data() << endl;
+												std::cout << i.first << ' ' << j.first << ' ' << j.second->get_data() << std::endl;
 
-						cout << endl;
+						std::cout << std::endl;
 				}
 				inline int weight() {
-						return nodes.size();
+						return this->nodes.size();
 				}
 				inline int degree(N n) {
-						return nodes[n]->degree();
+						return this->nodes[n]->degree();
 				};
 				void bfs(N n = 0,
-					function <void (N, N)> discoveredVertex = [] (N source, N discovered) -> void {},
-					function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {}) {
-						queue <N> root;
-						bool *visited = new bool [nodes.size()]();
+					std::function <void (N, N)> discoveredVertex = [] (N source, N discovered) -> void {},
+					std::function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {}) {
+						std::queue <N> root;
+						bool *visited = new bool [this->nodes.size()]();
 
 						root.push(n);
 						visited[n] = true;
 
 						while (!root.empty()) {
-								for (auto i : nodes[root.front()]->edges)
+								for (auto i : this->nodes[root.front()]->edges)
 										if (!visited[i.first]) {
 												visited[i.first] = true;
 												root.push(i.first);
@@ -99,10 +98,10 @@ class Graph {
 						delete [] visited;
 				};
 				void dfs(N n = 0,
-					function <void (N, N)> discoverVertex = [] (N source, N discovered) -> void {},
-					function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {},
-					function <void (N)> postVisitVertex = [] (N source) -> void {}) {
-				  	bool *visited = new bool [nodes.size()]();
+					std::function <void (N, N)> discoverVertex = [] (N source, N discovered) -> void {},
+					std::function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {},
+					std::function <void (N)> postVisitVertex = [] (N source) -> void {}) {
+				  	bool *visited = new bool [this->nodes.size()]();
 
 				  	visited[n] = true;
 
@@ -111,17 +110,17 @@ class Graph {
 				bool bipartite() {
 						DisjointSet <N> d;
 
-						for (auto i : nodes)
+						for (auto i : this->nodes)
 								d.makeSet(i.first);
 
 
-						int *color = new int[nodes.size()] ();
+						int *color = new int[this->nodes.size()] ();
 
-						for (auto i : nodes) {
+						for (auto i : this->nodes) {
 								if (i.first == d.findSet(i.first)->data) {
 										bool b = true;
 
-										bfs(i.first,
+										this->bfs(i.first,
 											[color, &d] (N src, N disc) -> void {
 												color[disc] = color[src] == 1 ? 2 : 1;
 												d.unionSet(src, src);
@@ -145,21 +144,21 @@ class Graph {
 				bool connected() {
 						int v = 1;
 
-						dfs(nodes.begin()->first, [&v] (N src, N disc) -> void {
+						this->dfs(this->nodes.begin()->first, [&v] (N src, N disc) -> void {
 								v++;
 						});
 
-						return v == nodes.size();
+						return v == this->nodes.size();
 				};
 				vector <N> component_heads() {
 						DisjointSet <N> d;
 
-						for (auto i : nodes)
+						for (auto i : this->nodes)
 								d.makeSet(i.first);
 
-						vector <N> result;
+						std::vector <N> result;
 
-						for (auto i : nodes) {
+						for (auto i : this->nodes) {
 								if (i.first == d.findSet(i.first)->data) {
 										result.push_back(i.first);
 
@@ -172,14 +171,40 @@ class Graph {
 						return result;
 				};
 
+				// std::string toOutputStream() const {
+				//     std::string str;
+				//     str.append("\n********* Output *********\n\n");
+				//     str.append(std::to_string(this->numberOfStates) + " " +
+				//                std::to_string(this->initialState) + " " +
+				//                std::to_string(this->finalStates.size()));
+				//     for (const state &s : this->finalStates) {
+				//       	str.append(" " + std::to_string(s));
+				//     }
+				//     str.append("\n");
+				//     for (int sFrom = 0; sFrom < this->TransitionTable.size(); ++sFrom) {
+				//       	str.append(std::to_string(sFrom) + " 0 " +
+				//                  std::to_string(this->TransitionTable[sFrom][0]) + "\n");
+				//       	str.append(std::to_string(sFrom) + " 1 " +
+				//                  std::to_string(this->TransitionTable[sFrom][1]) + "\n");
+				//     }
+				//     str.append("\n**** Finished printing ****\n");
+				//
+				//     return str;
+			  // }
+				// friend std::ostream &operator<<(std::ostream &os, const self &A) {
+				//     std::string s = A.toOutputStream();
+				//     os << s;
+				//     return os;
+			  // }
+
 		private:
 				void dfs_recursive(N n, bool *visited,
-					function <void (N, N)> discoverVertex = [] (N source, N discovered) -> void {},
-					function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {},
-					function <void (N)> postVisitVertex = [] (N source) -> void {}) {
+					std::function <void (N, N)> discoverVertex = [] (N source, N discovered) -> void {},
+					std::function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {},
+					std::function <void (N)> postVisitVertex = [] (N source) -> void {}) {
 						visited[n] = true;
 
-						for (auto i : nodes[n]->edges) {
+						for (auto i : this->nodes[n]->edges) {
 								if (!visited[i.first]) {
 										discoverVertex(n, i.first);
 

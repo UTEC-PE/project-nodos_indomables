@@ -9,7 +9,7 @@ class Edge {
         typedef typename G::E E;
         typedef typename G::E N;
         typedef typename G::node node;
-        typedef typename G::Constructor Constructor;
+        typedef typename G::EdgeConstructor Constructor;
 
         node *nodes[2];
 
@@ -21,8 +21,8 @@ class Edge {
     public:
         Edge(node *node1, node *node2, E data) :
         data(data) {
-            nodes[0] = node1;
-            nodes[1] = node2;
+            this->nodes[0] = node1;
+            this->nodes[1] = node2;
 
             cns(this, node1, node2);
 
@@ -30,7 +30,7 @@ class Edge {
             node2->d++;
         }
         inline E get_data() {
-            return data;
+            return this->data;
         }
 };
 

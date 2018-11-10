@@ -3,8 +3,6 @@
 
 #include <random>
 
-using namespace std;
-
 template <typename G>
 class Node {
     public:
@@ -24,10 +22,10 @@ class Node {
 
     public:
         Node(N data) : data(data) {
-						random_device rd;
+						std::random_device rd;
 
-						x = rd() / rd.max();
-            y = rd() / rd.max();
+						this->x = rd() / rd.max();
+            this->y = rd() / rd.max();
         };
         Node(N data, double x, double y) : data(data), x(x), y(y) {};
 
@@ -36,16 +34,16 @@ class Node {
             this->y = y;
         }
         inline N get() {
-            return data;
+            return this->data;
         }
         inline int degree() {
-            return d;
+            return this->d;
         }
         inline int in_degree() {
-            return d - edges.size();
+            return this->d - this->edges.size();
         }
         inline int out_degree() {
-            return edges.size();
+            return this->edges.size();
         }
 };
 

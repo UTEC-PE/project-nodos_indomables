@@ -5,7 +5,7 @@
 
 #include "graph.h"
 
-struct DirectedNodeConstructor;
+// struct DirectedNodeConstructor;
 
 template <typename Tr>
 class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
@@ -15,14 +15,18 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
         typedef Edge<self> edge;
 
         typedef typename Tr::N N;
-        typedef map<N,node*> NodeSeq;
-        typedef map<N,edge*> EdgeSeq;
+        typedef std::map<N,node*> NodeSeq;
+        typedef std::map<N,edge*> EdgeSeq;
 
         typedef typename Tr::E E;
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
 
-        typedef DirectedNodeConstructor Constructor;
+        struct EdgeConstructor {
+        		void operator() (edge *e, node *node1, node *node2) {
+                node1->edges[node2->get()] = e;
+        		}
+        };
 
 
         DirectedGraph() : Graph <Tr, DirectedGraph<Tr>> () {};
@@ -49,7 +53,7 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
                     g->insert_edge(j.first, i.first);
         }
         bool strongly_connected() {
-            stack <N> route;
+            std::stack <N> route;
 						bool *visited = new bool[this->nodes.size()] ();
 
 						for (auto i : this->nodes) {
@@ -69,7 +73,7 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
 
 
             self g;
-            reverse(&g);
+            this->reverse(&g);
 
             delete [] visited;
             visited = new bool[this->nodes.size()] ();
@@ -110,15 +114,15 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
         }
 };
 
-struct DirectedNodeConstructor {
-		typedef DirectedGraph<Traits> G;
-		typedef typename G::node node;
-		typedef typename G::edge edge;
-
-		void operator() (edge *e, node *node1, node *node2) {
-        node1->edges[node2->get()] = e;
-		}
-};
+// struct DirectedNodeConstructor {
+// 		typedef DirectedGraph<Traits> G;
+// 		typedef typename G::node node;
+// 		typedef typename G::edge edge;
+//
+// 		void operator() (edge *e, node *node1, node *node2) {
+//         node1->edges[node2->get()] = e;
+// 		}
+// };
 
 typedef DirectedGraph<Traits> directedGraph;
 
