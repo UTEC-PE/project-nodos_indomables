@@ -29,8 +29,9 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
         };
 
 
-        DirectedGraph() : Graph <Tr, DirectedGraph<Tr>> () {};
+        DirectedGraph() {};
         DirectedGraph(int n) : Graph <Tr, DirectedGraph<Tr>> (n) {};
+        DirectedGraph(self& g) : Graph <Tr, self> (g) {}
 
         inline int in_degree(N n) {
             return this->nodes[n]->in_degree();

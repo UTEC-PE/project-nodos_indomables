@@ -14,47 +14,47 @@
  **/
 template <typename G>
 class Read {
-		public:
-				typedef typename G::N N;
-				typedef typename G::E E;
+	public:
+		typedef typename G::N N;
+		typedef typename G::E E;
 
-		private:
-				G *g;
+	private:
+		G *g;
 
-		public:
-				Read(string file) {
-						std::fstream input(file, std::fstream::in);
+	public:
+		Read(string file) {
+			std::fstream input(file, std::fstream::in);
 
-						int n;
+			int n;
 
-						input >> n;
+			input >> n;
 
-						this->g = new G();
+			this->g = new G();
 
-						double x, y;
+			double x, y;
 
-						for (int i = 0; i < n; i++) {
-								input >> x >> y;
+			for (int i = 0; i < n; i++) {
+					input >> x >> y;
 
-								this->g->insert_node(x, y);
-						}
+					this->g->insert_node(x, y);
+			}
 
-						N node1, node2;
-						E weight;
+			N node1, node2;
+			E weight;
 
-						while (input >> node1 >> node2 >> weight)
-								this->g->insert_edge(node1, node2, weight);
+			while (input >> node1 >> node2 >> weight)
+					this->g->insert_edge(node1, node2, weight);
 
-						input.close();
-				};
+			input.close();
+		};
 
-				auto getGraph() {
-						return this->g;
-				}
+		auto getGraph() {
+			return this->g;
+		}
 
-				~Read() {
-						delete this->g;
-				}
+		~Read() {
+			delete this->g;
+		}
 };
 
 #endif

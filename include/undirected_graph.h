@@ -9,8 +9,6 @@
 #include "graph.h"
 #include "traits.h"
 
-// struct UndirectedNodeConstructor;
-
 template <typename Tr>
 class UndirectedGraph : public Graph <Tr, UndirectedGraph<Tr>> {
     public:
@@ -46,8 +44,9 @@ class UndirectedGraph : public Graph <Tr, UndirectedGraph<Tr>> {
         };
 
 
-        UndirectedGraph() : Graph <Tr, UndirectedGraph<Tr>> () {};
-        UndirectedGraph(int n) : Graph <Tr, UndirectedGraph<Tr>> (n) {}
+        UndirectedGraph() {};
+        UndirectedGraph(int n) : Graph <Tr, self> (n) {}
+        UndirectedGraph(self& g) : Graph <Tr, self> (g) {}
 
         void kruskal(std::function <void (N, N)> newEdge = [] (N node0, N node1) -> void {}) {
 						DisjointSet <N> d;

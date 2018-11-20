@@ -28,6 +28,7 @@ class Node {
             this->y = rd() / rd.max();
         };
         Node(N data, double x, double y) : data(data), x(x), y(y) {};
+        Node(const Node &node) : data(node.data), x(node.x), y(node.y) {};
 
         void replace(double x, double y) {
             this->x = x;
