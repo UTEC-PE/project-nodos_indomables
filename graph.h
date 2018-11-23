@@ -1,9 +1,13 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <bits/stdc++.h>
 #include <vector>
 #include <map>
 #include <stack>
+#include <queue>
+#include <limits>
+#include <list>
 
 #include "node.h"
 #include "edge.h"
@@ -38,6 +42,10 @@ class Graph {
         EdgeIte ei;
 
 		public:
+			void insert_node(N node1){
+				node *n=new node(node1);
+				nodes[n->get()] = n;
+			}
 				void insert_node(double x, double y) {
 						node *n = new node(x, y);
 
@@ -67,27 +75,34 @@ class Graph {
 						cout << endl;
 				}
 
-				//
-void DFS(N node1){
-	stack <N> stack;
-	bool *visited=new bool[nodes.size()]();
-	stack.push(node1);
-	while (!stack.empty()){
-		node1=stack.top();
-		stack.pop();
-		if (!visited[node1]){
-			cout << node1 << ' ';
-			visited[node1]=true;
-		}
-		for(ei=nodes[node1]->edges.begin();ei!=nodes[node1]->edges.end();++ei)
-			if (!visited[ei->second->get_data()])
-				stack.push(ei->second->get_data());
-	}
-}
 
-void PRIM(N node1) {
+				void aStar(N ninit, N nfin){
+					map<N, N> came_from;
+					map<N, E> cost_so_far;
+					priority_queue<N,E> fronti;
+					fronti.push(ninit,0);
+					came_from[ninit]=ninit;
+					cost_so_far[ninit]=0;
+					while (!fronti.empty()) {
+						N current=fronti.get();
+						if (current==nfin){
+							break;
+						}
+						for (ei = nodes[current]->edges.begin(); ei != nodes[current]->edges.end(); ++ei){
+							E new_cost= cost_so_far[current] + ei->second->get_data();
+							if(cost_so_far.find(ei->second->nodes[1]->get())==cost_so_far.end() || new_cost < cost_so_far[ei->second->nodes[1]->get()]){
+								cost_so_far[ei->second->nodes[1]->get()] = new_cost;
+				        E priority = new_cost + ei->second->nodes[1]->heuristica();
+								fronti.push(ei->second->nodes[1]->get(),priority);
+								came_from[ei->second->nodes[1]->get()]=current;
+							}
+						}
+					}
+					for(int i=0;i<fronti.size();i++){
+						cout<<fronti[i]<<" ";
+					}
+				}
 
-}
 
 				~Graph() {
 						for (ni = nodes.begin(); ni != nodes.end(); ++ni)

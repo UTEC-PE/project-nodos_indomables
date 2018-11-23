@@ -24,7 +24,7 @@ class Node {
         double y;
 
     public:
-        Node() : data(__node_counter++), x(0), y(0) {};
+        Node(N n) : data(n), x(0), y(0) {};
         Node(double x, double y) : data(__node_counter++), x(x), y(y) {};
 
         int replace(double x, double y) {
@@ -33,6 +33,9 @@ class Node {
         }
         N get() {
             return data;
+        }
+        N heuristica(){
+          return x+y;
         }
 };
 
