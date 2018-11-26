@@ -11,8 +11,8 @@ int main(int argc, char *argv[]) {
     Read<graph> r("graph1.txt");
 
     graph *g = r.getGraph();
-    g->aStar(3, 5);
-
+    g->greedy_bfs(0, 5);
+    g->print_nodes();
     //graph h;
     // g->PRIM(5, &h);
     // h.print_nodes();

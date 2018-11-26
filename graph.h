@@ -76,32 +76,56 @@ class Graph {
 				}
 
 
-				void aStar(N ninit, N nfin){
-					map<N, N> came_from;
-					map<N, E> cost_so_far;
-					priority_queue<N,E> fronti;
-					fronti.push(ninit,0);
-					came_from[ninit]=ninit;
-					cost_so_far[ninit]=0;
-					while (!fronti.empty()) {
-						N current=fronti.get();
-						if (current==nfin){
-							break;
+				// void aStar(N ninit, N nfin){
+				// 	map<N, N> came_from;
+				// 	map<N, E> cost_so_far;
+				// 	priority_queue<N,E> fronti;
+				// 	fronti.push(ninit,0);
+				// 	came_from[ninit]=ninit;
+				// 	cost_so_far[ninit]=0;
+				// 	while (!fronti.empty()) {
+				// 		N current=fronti.get();
+				// 		if (current==nfin){
+				// 			break;
+				// 		}
+				// 		for (ei = nodes[current]->edges.begin(); ei != nodes[current]->edges.end(); ++ei){
+				// 			E new_cost= cost_so_far[current] + ei->second->get_data();
+				// 			if(cost_so_far.find(ei->second->nodes[1]->get())==cost_so_far.end() || new_cost < cost_so_far[ei->second->nodes[1]->get()]){
+				// 				cost_so_far[ei->second->nodes[1]->get()] = new_cost;
+				//         E priority = new_cost + ei->second->nodes[1]->heuristica();
+				// 				fronti.push(ei->second->nodes[1]->get(),priority);
+				// 				came_from[ei->second->nodes[1]->get()]=current;
+				// 			}
+				// 		}
+				// 	}
+				// 	for(int i=0;i<fronti.size();i++){
+				// 		cout<<fronti[i]<<" ";
+				// 	}
+				// }
+
+				void greedy_bfs(N ni, N nf) {
+						set <N, int> root;
+						set <N> close;
+						bool *visited = new bool [nodes.size()]();
+						N actual;
+
+						root.insert(ni, ni.heuristica());
+						actual=root.begin();
+						visited[ni] = true;
+
+						while (!root.empty() || actual!=nf) {
+								root.erase(root.begin());
+								close.insert(actual);
+								for (auto i : nodes[actual]->edges)
+										if (!visited[i.first]) {
+												visited[i.first] = true;
+												root.insert(i.first, i.first.heuristica());
+											}
+								actual=root.begin();
 						}
-						for (ei = nodes[current]->edges.begin(); ei != nodes[current]->edges.end(); ++ei){
-							E new_cost= cost_so_far[current] + ei->second->get_data();
-							if(cost_so_far.find(ei->second->nodes[1]->get())==cost_so_far.end() || new_cost < cost_so_far[ei->second->nodes[1]->get()]){
-								cost_so_far[ei->second->nodes[1]->get()] = new_cost;
-				        E priority = new_cost + ei->second->nodes[1]->heuristica();
-								fronti.push(ei->second->nodes[1]->get(),priority);
-								came_from[ei->second->nodes[1]->get()]=current;
-							}
-						}
-					}
-					for(int i=0;i<fronti.size();i++){
-						cout<<fronti[i]<<" ";
-					}
-				}
+
+						delete [] visited;
+				};
 
 
 				~Graph() {
