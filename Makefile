@@ -12,4 +12,6 @@ main: $(SRCS) $(HDIR)/*.h
 
 run: main
 	@echo " Running..."
+	clear
+	clear
 	./main

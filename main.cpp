@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <set>
+#include <boost/heap/fibonacci_heap.hpp>
+#include <math.h>
 
 // Buscar graficador Cinder
 
@@ -9,26 +11,48 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
-  Read<undirectedGraph> r("graph3.txt");
-  auto g = r.getGraph();
+struct node {
+  int *val;
 
-  g->print_nodes();
+  node(int *i) : val(i) {};
+};
+
+struct compare {
+  bool operator()(const node& n1, const node& n2) const {
+    return *n1.val > *n2.val;
+  }
+};
+
+int main(int argc, char *argv[]) {
+  Read<undirectedGraph> r("graph4.txt");
+  auto g(r.getGraph());
+
+  g.printNodes();
 
   cout << endl;
 
-  g->print_edges();
+  g.printEdges();
+
+  g.dijkstra(0);
+
+  undirectedGraph h(g);
+
+  h.printNodes();
+
+  h.printEdges();
 
   // undirectedGraph h(g->weight());
-
-  g->dfs(0, [&] (Traits::N n0, Traits::N n1) -> void {
-    cout << n1 << ' ';
-  });
-
-  undirectedGraph h(*g);
-
-  h.print_nodes();
-  h.print_edges();
+  //
+  // g->dfs(0, [&] (Traits::N n0, Traits::N n1) -> void {
+  //   cout << n1 << ' ';
+  // });
+  //
+  // cout << endl;
+  //
+  // undirectedGraph h(*g);
+  //
+  // h.print_nodes();
+  // h.print_edges();
 
   // g->dfs(0, [&h] (Traits::N n0, Traits::N n1) -> void {
   //     cout << "Discovered: " << n1 << endl;

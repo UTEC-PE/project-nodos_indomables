@@ -29,7 +29,7 @@ class Edge {
             node1->d++;
             node2->d++;
         }
-        inline E get_data() {
+        inline E weight() {
             return this->data;
         }
 };

@@ -19,7 +19,7 @@ class Read {
 		typedef typename G::E E;
 
 	private:
-		G *g;
+		G g;
 
 	public:
 		Read(string file) {
@@ -29,31 +29,26 @@ class Read {
 
 			input >> n;
 
-			this->g = new G();
-
 			double x, y;
 
 			for (int i = 0; i < n; i++) {
-					input >> x >> y;
+				input >> x >> y;
 
-					this->g->insert_node(x, y);
+				this->g.insertNode(x, y);
 			}
 
 			N node1, node2;
 			E weight;
 
-			while (input >> node1 >> node2 >> weight)
-					this->g->insert_edge(node1, node2, weight);
+			while (input >> node1 >> node2 >> weight) {
+				this->g.insertEdge(node1, node2, weight);
+			}
 
 			input.close();
 		};
 
 		auto getGraph() {
 			return this->g;
-		}
-
-		~Read() {
-			delete this->g;
 		}
 };
 
