@@ -8,6 +8,7 @@
 #include <queue>
 #include <limits>
 #include <list>
+#include <set>
 
 #include "node.h"
 #include "edge.h"
@@ -76,55 +77,33 @@ class Graph {
 				}
 
 
-				// void aStar(N ninit, N nfin){
-				// 	map<N, N> came_from;
-				// 	map<N, E> cost_so_far;
-				// 	priority_queue<N,E> fronti;
-				// 	fronti.push(ninit,0);
-				// 	came_from[ninit]=ninit;
-				// 	cost_so_far[ninit]=0;
-				// 	while (!fronti.empty()) {
-				// 		N current=fronti.get();
-				// 		if (current==nfin){
-				// 			break;
-				// 		}
-				// 		for (ei = nodes[current]->edges.begin(); ei != nodes[current]->edges.end(); ++ei){
-				// 			E new_cost= cost_so_far[current] + ei->second->get_data();
-				// 			if(cost_so_far.find(ei->second->nodes[1]->get())==cost_so_far.end() || new_cost < cost_so_far[ei->second->nodes[1]->get()]){
-				// 				cost_so_far[ei->second->nodes[1]->get()] = new_cost;
-				//         E priority = new_cost + ei->second->nodes[1]->heuristica();
-				// 				fronti.push(ei->second->nodes[1]->get(),priority);
-				// 				came_from[ei->second->nodes[1]->get()]=current;
-				// 			}
-				// 		}
-				// 	}
-				// 	for(int i=0;i<fronti.size();i++){
-				// 		cout<<fronti[i]<<" ";
-				// 	}
-				// }
 
-				void greedy_bfs(N ni, N nf) {
-						set <N, int> root;
-						set <N> close;
-						bool *visited = new bool [nodes.size()]();
-						N actual;
 
-						root.insert(ni, ni.heuristica());
-						actual=root.begin();
-						visited[ni] = true;
-
-						while (!root.empty() || actual!=nf) {
-								root.erase(root.begin());
-								close.insert(actual);
-								for (auto i : nodes[actual]->edges)
-										if (!visited[i.first]) {
-												visited[i.first] = true;
-												root.insert(i.first, i.first.heuristica());
-											}
-								actual=root.begin();
+				vector <N> greedy_bfs(N ni, N nf, self h){
+					vector <N> outVector;
+					vector<int>::iterator count;
+  				count = outVector.begin();
+					map <E,N> root;
+					N actual;
+					bool *visited = new bool [nodes.size()]();
+					root.insert(nodes[ni]->heuristica(), ni);
+					h.insert_node(ni);
+					visited[ni]=true;
+					actual=root.begin()->second;
+					while (!root.empty() && actual!=nf) {
+						root.clear();
+						for (auto i : nodes[actual]->edges){
+							if (!visited[i.first]) {
+								visited[i.first] = true;
+								root.insert(i.second->nodes[1]->heuristica(),i.first);
+							}
 						}
-
-						delete [] visited;
+						actual=root.begin()->second;
+						outVector.insert(count,actual);
+						count = outVector.begin();
+					}
+					delete [] visited;
+					return outVector;
 				};
 
 

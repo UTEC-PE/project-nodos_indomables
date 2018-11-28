@@ -3,6 +3,7 @@
 
 #ifndef NODE_COUNTER
 #define NODE_COUNTER
+#include <math.h>
 
 char __node_counter = 0;
 
@@ -35,7 +36,7 @@ class Node {
             return data;
         }
         N heuristica(){
-          return x+y;
+          return std::abs(x+y);
         }
 };
 
