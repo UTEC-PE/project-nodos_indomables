@@ -63,7 +63,6 @@ class Graph {
 			new edge(this->nodes.at(node1), this->nodes.at(node2), weight);
 		}
 
-
 		inline int weight() const {
 			return this->nodes.size();
 		}
@@ -303,9 +302,87 @@ class Graph {
 
       return {distances, sources};
     }
+    std::vector <N> aStar(N initialNode, N finalNode) {
+      std::map<N, E> gScore, fScore;
+      std::map<N, N> cameFrom;
+
+      std::vector<N> outVector;
+      std::vector<int>::iterator count = outVector.begin();
+
+      std::set<N> close, open;
+
+
+      open.insert(initialNode);
+      gScore[initialNode] = 0;
+      fScore[initialNode] = this->nodes[initialNode]->heuristica();
+
+
+      while (!open.empty()) {
+        N current = *open.begin();
+
+        if (current == finalNode) break;
+
+        open.erase(current);
+        close.insert(current);
+
+        for (auto currentEdge : this->nodes[current]->edges) {
+          if (close.count(currentEdge.first)) continue;
+
+          E newCost = gScore[current] + currentEdge.second->weight();
+
+          if (!open.count(currentEdge.first)) {
+            open.insert(currentEdge.first);
+          } else if (newCost >= gScore[currentEdge.first]) continue;
+
+          cameFrom[currentEdge.first] = current;
+          gScore[currentEdge.first] = newCost;
+          fScore[currentEdge.first] = newCost
+                                    + this->nodes[currentEdge.first]->heuristica();
+        }
+      }
+
+      for (std::set<int>::iterator iter = close.begin();
+           iter != close.end(); ++iter) {
+        outVector.insert(outVector.end(), *iter);
+        count = outVector.end();
+      }
+
+      count = outVector.end();
+      outVector.insert(count, *open.begin());
+
+      return outVector;
+    }
+    std::vector <N> greedyBfs(N initialNode, N finalNode) {
+			std::vector <N> outVector;
+			std::vector<int>::iterator count = outVector.begin();
+
+			std::map <E, N> root;
+
+      std::vector<bool> visited(this->weight(), false);
+			N currentNode = root[nodes[initialNode]->heuristica()] = initialNode;
+
+			visited[initialNode] = true;
+
+			while (!root.empty() && currentNode != finalNode) {
+				root.clear();
+
+				for (auto i : nodes[currentNode]->edges) {
+					if (!visited[i.first]) {
+						visited[i.first] = true;
+						root.insert(i.second->nodes[1]->heuristica(), i.first);
+					}
+				}
+
+				currentNode = root.begin()->second;
+				outVector.insert(count, currentNode);
+				count = outVector.begin();
+			}
+
+			return outVector;
+		};
 
     self operator= (self g) {
-      this->g(g);
+      return this->g(g);
     }
 
 		// std::string toOutputStream() const {

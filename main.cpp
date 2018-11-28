@@ -41,6 +41,10 @@ int main(int argc, char *argv[]) {
 
   h.printEdges();
 
+  for (auto i : h.greedyBfs(0, 1)) {
+    cout << i << endl;
+  }
+
   // undirectedGraph h(g->weight());
   //
   // g->dfs(0, [&] (Traits::N n0, Traits::N n1) -> void {

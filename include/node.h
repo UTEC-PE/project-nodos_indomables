@@ -32,24 +32,24 @@ class Node {
     Node(N data, double x, double y) : data(data), x(x), y(y) {};
     Node(const Node &node) : data(node.data), x(node.x), y(node.y) {};
 
-    void replace(double x, double y) {
+    void replace(const double x, const double y) {
       this->x = x;
       this->y = y;
     }
-    inline N get() {
+    inline N get() const {
       return this->data;
     }
-    inline int degree() {
+    inline int degree() const {
       return this->d;
     }
-    inline int inDegree() {
+    inline int inDegree() const {
       return this->d - this->edges.size();
     }
-    inline int outDegree() {
+    inline int outDegree() const {
       return this->edges.size();
     }
 
-    E operator[](N node) {
+    E operator[](const N node) const {
       EdgeIte nodeIterator = this->edges.find(node);
 
       if (nodeIterator == this->edges.end()) {
@@ -59,8 +59,11 @@ class Node {
       return nodeIterator->second->weight();
     }
 
-    inline EdgeIte find(N node) {
+    inline EdgeIte find(const N node) const {
       return this->edges.find(node);
+    }
+    inline N heuristica() const {
+      return this->x + this->y;
     }
 };
 
