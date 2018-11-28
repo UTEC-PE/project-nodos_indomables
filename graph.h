@@ -8,6 +8,7 @@
 #include <queue>
 #include <limits>
 #include <list>
+#include <set>
 
 #include "node.h"
 #include "edge.h"
@@ -75,33 +76,46 @@ class Graph {
 						cout << endl;
 				}
 
+				vector <N> aStar(N ni, N nf){
+					vector<N> outVector ;
+					vector<int>::iterator count;
+  				count = outVector.begin();
+					set<N> close;
+					set<N> open;
+					map<N, N> cameFrom;
+					map<N, E> gScore;
+					map<N, E> fScore;
+					open.insert(ni);
+					gScore[ni]=0;
+					fScore[ni]=nodes[ni]->heuristica();
+					while(!open.empty()){
+						N current=*open.begin();
+						if (current==nf) break;
+						open.erase(current);
+						close.insert(current);
+						for (auto i : nodes[current]->edges){
+							if (close.count(i.first)!=0) continue;
+							E newCost=gScore[current]+ i.second->get_data();
+							if (open.count(i.first)==0) open.insert(i.first);
+							else if (newCost>=gScore[i.first]) continue;
+							cameFrom[i.first]=current;
+							gScore[i.first]=newCost;
+							fScore[i.first]=gScore[i.first]+ nodes[i.first]->heuristica();
+						}
+					}
+					for (set<int>::iterator iter=close.begin(); iter!=close.end(); ++iter){
+						outVector.insert(count, *iter);
+						count = outVector.end();
+					}
+					count = outVector.end();
+					outVector.insert(count, *open.begin());
 
-				void aStar(N ninit, N nfin){
-					map<N, N> came_from;
-					map<N, E> cost_so_far;
-					priority_queue<N,E> fronti;
-					fronti.push(ninit,0);
-					came_from[ninit]=ninit;
-					cost_so_far[ninit]=0;
-					while (!fronti.empty()) {
-						N current=fronti.get();
-						if (current==nfin){
-							break;
-						}
-						for (ei = nodes[current]->edges.begin(); ei != nodes[current]->edges.end(); ++ei){
-							E new_cost= cost_so_far[current] + ei->second->get_data();
-							if(cost_so_far.find(ei->second->nodes[1]->get())==cost_so_far.end() || new_cost < cost_so_far[ei->second->nodes[1]->get()]){
-								cost_so_far[ei->second->nodes[1]->get()] = new_cost;
-				        E priority = new_cost + ei->second->nodes[1]->heuristica();
-								fronti.push(ei->second->nodes[1]->get(),priority);
-								came_from[ei->second->nodes[1]->get()]=current;
-							}
-						}
-					}
-					for(int i=0;i<fronti.size();i++){
-						cout<<fronti[i]<<" ";
-					}
+
+					return outVector;
 				}
+
+
+
 
 
 				~Graph() {
