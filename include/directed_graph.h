@@ -5,7 +5,7 @@
 
 #include "graph.h"
 
-struct DirectedNodeConstructor;
+// struct DirectedNodeConstructor;
 
 template <typename Tr>
 class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
@@ -15,42 +15,57 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
         typedef Edge<self> edge;
 
         typedef typename Tr::N N;
-        typedef map<N,node*> NodeSeq;
-        typedef map<N,edge*> EdgeSeq;
+        typedef std::map<N,node*> NodeSeq;
+        typedef std::map<N,edge*> EdgeSeq;
 
         typedef typename Tr::E E;
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
 
-        typedef DirectedNodeConstructor Constructor;
-
-
-        DirectedGraph() : Graph <Tr, DirectedGraph<Tr>> () {};
-        DirectedGraph(int n) : Graph <Tr, DirectedGraph<Tr>> (n) {};
-
-        inline int in_degree(N n) {
-            return this->nodes[n]->in_degree();
+        struct EdgeConstructor {
+      		void operator() (edge *e, node *node1, node *node2) {
+            node1->edges[node2->get()] = e;
+      		}
         };
-        inline int out_degree(N n) {
-            return this->nodes[n]->out_degree();
+
+
+        DirectedGraph() {};
+        DirectedGraph(int n) {
+          while (n--) {
+    				this->insertNode();
+          }
+        };
+        DirectedGraph(const self& g) : DirectedGraph(g.weight()) {
+          for (auto n : g.nodes) {
+            for (auto e : n.second->edges) {
+              this->insertEdge(n.first, e.first, e.second->getData());
+            }
+          }
+        }
+
+        inline int inDegree(N n) {
+            return this->nodes[n]->inDegree();
+        };
+        inline int outDegree(N n) {
+            return this->nodes[n]->outDegree();
         };
         inline bool source(N n) {
-            return !this->nodes[n]->in_degree();
+            return !this->nodes[n]->inDegree();
         };
         inline bool sink(N n) {
-            return !this->nodes[n]->out_degree();
+            return !this->nodes[n]->outDegree();
         };
         void reverse(self *g) {
-            for (auto i : this->nodes)
-                g->insert_node();
+          for (auto i : this->nodes)
+            g->insertNode();
 
-            for (auto i : this->nodes)
-                for (auto j : i.second->edges)
-                    g->insert_edge(j.first, i.first);
+          for (auto i : this->nodes)
+            for (auto j : i.second->edges)
+              g->insertEdge(j.first, i.first);
         }
         bool strongly_connected() {
-            stack <N> route;
-						bool *visited = new bool[this->nodes.size()] ();
+            std::stack <N> route;
+						bool *visited = new bool[this->weight()] ();
 
 						for (auto i : this->nodes) {
 								if (!visited[i.first]) {
@@ -69,29 +84,29 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
 
 
             self g;
-            reverse(&g);
+            this->reverse(&g);
 
             delete [] visited;
-            visited = new bool[this->nodes.size()] ();
+            visited = new bool[this->weight()] ();
 
             vector <vector <N>> result;
 
             while (!route.empty()) {
-                if (!visited[route.top()]) {
-                    visited[route.top()] = true;
-                    cout << route.top() << ' ';
+              if (!visited[route.top()]) {
+                visited[route.top()] = true;
+                cout << route.top() << ' ';
 
-    								g.dfs(route.top(), [&] (N src, N disc) -> void {
-                        if (!visited[disc]) {
-                            visited[disc] = true;
-                            cout << disc << ' ';
-                        }
-                    });
+								g.dfs(route.top(), [&] (N src, N disc) -> void {
+                    if (!visited[disc]) {
+                        visited[disc] = true;
+                        cout << disc << ' ';
+                    }
+                });
 
-                    cout << endl;
-                }
+                cout << endl;
+              }
 
-                route.pop();
+              route.pop();
             }
 
 
@@ -99,25 +114,27 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
 
             return false;
         };
+    		void print_edges() {
+    			for (auto i : this->nodes) {
+    				for (auto j : i.second->edges) {
+  						std::cout << i.first << ' ' << j.first << ' ' << j.second->getData() << std::endl;
+            }
+          }
+
+    			std::cout << std::endl;
+    		}
 
         ~DirectedGraph() {
-            for (auto i : this->nodes)
-                for (auto j : i.second->edges)
-                    delete j.second;
+          for (auto i : this->nodes) {
+            for (auto j : i.second->edges) {
+              delete j.second;
+            }
+          }
 
-            for (auto i : this->nodes)
-                delete i.second;
+          for (auto i : this->nodes) {
+            delete i.second;
+          }
         }
-};
-
-struct DirectedNodeConstructor {
-		typedef DirectedGraph<Traits> G;
-		typedef typename G::node node;
-		typedef typename G::edge edge;
-
-		void operator() (edge *e, node *node1, node *node2) {
-        node1->edges[node2->get()] = e;
-		}
 };
 
 typedef DirectedGraph<Traits> directedGraph;

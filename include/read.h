@@ -7,8 +7,6 @@
 #include "undirected_graph.h"
 #include "directed_graph.h"
 
-using namespace std;
-
 /**
  * Clase de ayuda para leer el grafo desde un archivo,
  * no es necesario que la utilicen, podrían implementar su lector
@@ -16,47 +14,42 @@ using namespace std;
  **/
 template <typename G>
 class Read {
-		public:
-				typedef typename G::N N;
-				typedef typename G::E E;
+	public:
+		typedef typename G::N N;
+		typedef typename G::E E;
 
-		private:
-				G *g;
+	private:
+		G g;
 
-		public:
-				Read(string file) {
-						fstream input(file, fstream::in);
+	public:
+		Read(string file) {
+			std::fstream input(file, std::fstream::in);
 
-						int n;
+			int n;
 
-						input >> n;
+			input >> n;
 
-						g = new G();
+			double x, y;
 
-						double x, y;
+			for (int i = 0; i < n; i++) {
+				input >> x >> y;
 
-						for (int i = 0; i < n; i++) {
-								input >> x >> y;
+				this->g.insertNode(x, y);
+			}
 
-								g->insert_node(x, y);
-						}
+			N node1, node2;
+			E weight;
 
-						N node1, node2;
-						E weight;
+			while (input >> node1 >> node2 >> weight) {
+				this->g.insertEdge(node1, node2, weight);
+			}
 
-						while (input >> node1 >> node2 >> weight)
-								g->insert_edge(node1, node2, weight);
+			input.close();
+		};
 
-						input.close();
-				};
-
-				auto getGraph() {
-						return g;
-				}
-
-				~Read() {
-						delete g;
-				}
+		auto getGraph() {
+			return this->g;
+		}
 };
 
 #endif
