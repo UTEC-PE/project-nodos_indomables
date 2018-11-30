@@ -7,7 +7,6 @@
 #include <stack>
 #include <queue>
 #include <ostream>
-#include <boost/heap/fibonacci_heap.hpp>
 
 #include "node.h"
 #include "edge.h"
@@ -29,8 +28,77 @@ class Graph {
     typedef typename NodeSeq::iterator NodeIte;
     typedef typename EdgeSeq::iterator EdgeIte;
 
+    struct Scan {
+      void operator()(N firstNode, N secondNode...) {
+        std::cout << firstNode << " -- " << secondNode << std::endl;
+      }
 
-	// protected:
+      void operator()(N firstNode...) {
+        std::cout << firstNode << std::endl;
+      }
+    };
+    struct Ignore {
+      void operator()(...) {};
+    };
+
+    struct Print {
+      typedef Scan Initiate;
+      typedef Scan Discover;
+      typedef Ignore Visit;
+      typedef Ignore Leave;
+    };
+
+
+    template <typename I = Ignore,
+              typename D = Ignore,
+              typename V = Ignore,
+              typename L = Ignore>
+    struct Default {
+      typedef I Initiate;
+      typedef D Discover;
+      typedef V Visit;
+      typedef L Leave;
+    };
+
+    template <typename Method = Print, typename... Types>
+    struct Search {
+      typedef typename std::tuple<Types...> TypeContainer;
+      typedef typename Method::Initiate Initiate;
+      typedef typename Method::Discover Discover;
+      typedef typename Method::Visit Visit;
+      typedef typename Method::Leave Leave;
+
+      TypeContainer data;
+      Initiate initiate_;
+      Discover discover_;
+      Visit visit_;
+      Leave leave_;
+
+      Search(Types... args) : data(args...) {};
+
+      void initiate(N firstNode) {
+        initiate_(firstNode, this->data);
+      }
+      void discover(N firstNode, N secondNode) {
+        discover_(firstNode, secondNode, this->data);
+      }
+      void visit(N firstNode, N secondNode) {
+        visit_(firstNode, secondNode, this->data);
+      }
+      void leave(N firstNode) {
+        leave_(firstNode, this->data);
+      }
+
+      TypeContainer get() const {
+        return data;
+      }
+      auto get(const int n) const {
+        return std::get<n>(data);
+      }
+    };
+
+
+	protected:
     NodeSeq nodes;
     NodeIte ni;
     EdgeIte ei;
@@ -70,54 +138,46 @@ class Graph {
 			return this->nodes[n]->degree();
 		};
 
-		void printNodes() const {
-			for (auto currentNode : this->nodes) {
-				std::cout << currentNode.second->get() << ' ';
-      }
-
-			std::cout << std::endl;
-		}
-		void printEdges() const {
-			for (auto i : this->nodes) {
-				for (auto j : i.second->edges) {
-					if (i.first < j.first) {
-						std::cout << i.first << ' ' << j.first << ' ' << j.second->weight() << std::endl;
-          }
-        }
-      }
-
-			std::cout << std::endl;
-		}
-
+    void bfs(N n = 0) {
+      this->bfs<Print>(n);
+    }
+    template <typename Method = Default<>, typename... Types>
 		void bfs(N n = 0,
-			       std::function <void (N, N)> discoveredVertex = [] (N source, N discovered) -> void {},
-			       std::function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {}) {
+             Search<Method, Types...>&& search = Search<Method, Types...>()) {
 			std::queue <N> root;
 			bool *visited = new bool [this->weight()]();
 
 			root.push(n);
 			visited[n] = true;
 
-			while (!root.empty()) {
-				for (auto i : this->nodes[root.front()]->edges)
-					if (!visited[i.first]) {
-						visited[i.first] = true;
-						root.push(i.first);
 
-						discoveredVertex(root.front(), i.first);
+      search.initiate(n);
+
+			while (!root.empty()) {
+				for (auto currentNode : this->nodes[root.front()]->edges) {
+					if (!visited[currentNode.first]) {
+						visited[currentNode.first] = true;
+						root.push(currentNode.first);
+
+            search.discover(currentNode.first,root.front());
 					} else {
-						visitedVertex(root.front(), i.first);
+            search.visit(currentNode.first, root.front());
 					}
+        }
+
+        search.leave(root.front());
 
 				root.pop();
 			}
 
 			delete [] visited;
 		};
+    void dfs(N n = 0) {
+      this->dfs<Print>(n);
+    }
+    template <typename Method = Default<>, typename... Types>
 		void dfs(N n = 0,
-             std::function <void (N, N)> discoverVertex = [] (N source, N discovered) -> void {},
-			       std::function <void (N, N)> visitedVertex = [] (N source, N visited) -> void {},
-			       std::function <void (N)> postVisitVertex = [] (N source) -> void {}) {
+             Search<Method, Types...>&& search = Search<Method, Types...>()) {
       std::stack <N> root;
       std::stack <EdgeIte> iterators;
 	  	bool *visited = new bool [this->weight()]();
@@ -126,22 +186,27 @@ class Graph {
       iterators.push(this->nodes[n]->edges.begin());
       visited[n] = true;
 
+      search.initiate(n);
+
       while (!root.empty()) {
         EdgeIte end = this->nodes[root.top()]->edges.end();
 
         while (iterators.top() != end && visited[iterators.top()->first]) {
-          visitedVertex(root.top(), iterators.top()->first);
+          search.visit(iterators.top()->first, root.top());
+
           ++iterators.top();
         }
 
         if (iterators.top() != end) {
           visited[iterators.top()->first] = true;
 
-          discoverVertex(root.top(), iterators.top()->first);
+          search.discover(iterators.top()->first, root.top());
 
           root.push(iterators.top()->first);
           iterators.push(this->nodes[root.top()]->edges.begin());
         } else {
+          search.leave(root.top());
+
           root.pop();
           iterators.pop();
         }
@@ -385,31 +450,57 @@ class Graph {
       return this->g(g);
     }
 
-		// std::string toOutputStream() const {
-		//     std::string str;
-		//     str.append("\n********* Output *********\n\n");
-		//     str.append(std::to_string(this->numberOfStates) + " " +
-		//                std::to_string(this->initialState) + " " +
-		//                std::to_string(this->finalStates.size()));
-		//     for (const state &s : this->finalStates) {
-		//       	str.append(" " + std::to_string(s));
-		//     }
-		//     str.append("\n");
-		//     for (int sFrom = 0; sFrom < this->TransitionTable.size(); ++sFrom) {
-		//       	str.append(std::to_string(sFrom) + " 0 " +
-		//                  std::to_string(this->TransitionTable[sFrom][0]) + "\n");
-		//       	str.append(std::to_string(sFrom) + " 1 " +
-		//                  std::to_string(this->TransitionTable[sFrom][1]) + "\n");
-		//     }
-		//     str.append("\n**** Finished printing ****\n");
-		//
-		//     return str;
-	  // }
-		// friend std::ostream &operator<<(std::ostream &os, const self &A) {
-		//     std::string s = A.toOutputStream();
-		//     os << s;
-		//     return os;
-	  // }
+		std::string toOutputStream() const {
+      int maxNodeLength = 0;
+
+      for (auto node : this->nodes) {
+        int currentLength = std::to_string(node.first).length();
+
+        if (currentLength > maxNodeLength) {
+          maxNodeLength = currentLength;
+        }
+      }
+
+
+      std::string table;
+      int maxLineLength = 0;
+
+      for (auto currentNode : this->nodes) {
+        std::string currentString = std::to_string(currentNode.first),
+                    currentLine;
+
+        currentLine.append(std::string(maxNodeLength - currentString.length(), ' ') +
+                   currentString +
+                   " |");
+
+        for (auto neighborNode : currentNode.second->edges) {
+          currentLine.append(" " + std::to_string(neighborNode.first));
+        }
+
+        int currentLineLength = currentLine.length();
+
+        if (currentLineLength > maxLineLength) {
+          maxLineLength = currentLineLength;
+        }
+
+        table.append(currentLine + "\n");
+      }
+
+	    std::string output;
+
+	    output.append("\n********* Output *********\n\nAdjacency List\n" +
+                    std::string(maxLineLength, '-') + "\n" +
+                    table +
+                    std::string(maxLineLength, '-') +
+                    "\n\n**** Finished printing ****\n");
+
+	    return output;
+	  }
+		friend std::ostream &operator<<(std::ostream &os, const self &g) {
+	    std::string s = g.toOutputStream();
+	    os << s;
+	    return os;
+	  }
 };
 
 #endif

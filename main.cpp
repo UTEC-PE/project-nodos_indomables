@@ -23,27 +23,34 @@ struct compare {
   }
 };
 
+
+
 int main(int argc, char *argv[]) {
   Read<undirectedGraph> r("graph4.txt");
   auto g(r.getGraph());
 
-  g.printNodes();
-
-  cout << endl;
-
-  g.printEdges();
+  cout << g << endl;
 
   g.dijkstra(0);
 
   undirectedGraph h(g);
 
-  h.printNodes();
+  cout << h << endl;
 
-  h.printEdges();
+  h.bfs();
+  h.dfs();
 
-  for (auto i : h.greedyBfs(0, 1)) {
-    cout << i << endl;
-  }
+
+
+  // GraphSearcher<Print> functions;
+  //
+  // functions.discover();
+  //
+  // h.myTest<Print>();
+
+  // for (auto i : h.greedyBfs(0, 1)) {
+  //   cout << i << endl;
+  // }
 
   // undirectedGraph h(g->weight());
   //

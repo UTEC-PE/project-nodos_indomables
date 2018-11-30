@@ -5,8 +5,6 @@
 
 #include "graph.h"
 
-// struct DirectedNodeConstructor;
-
 template <typename Tr>
 class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
     public:
@@ -38,7 +36,7 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
         DirectedGraph(const self& g) : DirectedGraph(g.weight()) {
           for (auto n : g.nodes) {
             for (auto e : n.second->edges) {
-              this->insertEdge(n.first, e.first, e.second->getData());
+              this->insertEdge(n.first, e.first, e.second->weight());
             }
           }
         }
@@ -117,7 +115,7 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
     		void print_edges() {
     			for (auto i : this->nodes) {
     				for (auto j : i.second->edges) {
-  						std::cout << i.first << ' ' << j.first << ' ' << j.second->getData() << std::endl;
+  						std::cout << i.first << ' ' << j.first << ' ' << j.second->weight() << std::endl;
             }
           }
 
