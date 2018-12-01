@@ -23,27 +23,44 @@ struct compare {
   }
 };
 
+
+
 int main(int argc, char *argv[]) {
-  Read<undirectedGraph> r("graph4.txt");
+  Read<directedGraph> r("graph5.txt");
   auto g(r.getGraph());
 
-  g.printNodes();
-
-  cout << endl;
-
-  g.printEdges();
+  cout << g << endl;
 
   g.dijkstra(0);
 
-  undirectedGraph h(g);
-
-  h.printNodes();
-
-  h.printEdges();
-
-  for (auto i : h.greedyBfs(0, 1)) {
-    cout << i << endl;
+  for (auto node : g.aStar(1, 6)) {
+    cout << node << endl;
   }
+
+
+
+  // std::map<int, std::pair<int, int>> m = g.bellmanFord();
+  //
+  // for (auto i : m) {
+  //   cout << i.first << '-' << i.second.first << ' ' << i.second.second << endl;
+  // }
+
+  // h.bfs();
+  // h.dfs();
+
+  // cout << h.connected() << endl;
+
+
+
+  // GraphSearcher<Print> functions;
+  //
+  // functions.discover();
+  //
+  // h.myTest<Print>();
+
+  // for (auto i : h.greedyBfs(0, 1)) {
+  //   cout << i << endl;
+  // }
 
   // undirectedGraph h(g->weight());
   //

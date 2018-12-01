@@ -5,8 +5,6 @@
 
 #include "graph.h"
 
-// struct DirectedNodeConstructor;
-
 template <typename Tr>
 class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
     public:
@@ -38,48 +36,52 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
         DirectedGraph(const self& g) : DirectedGraph(g.weight()) {
           for (auto n : g.nodes) {
             for (auto e : n.second->edges) {
-              this->insertEdge(n.first, e.first, e.second->getData());
+              this->insertEdge(n.first, e.first, e.second->weight());
             }
           }
         }
 
-        inline int inDegree(N n) {
-            return this->nodes[n]->inDegree();
+        inline int inDegree(N n) const {
+          return this->nodes[n]->inDegree();
         };
-        inline int outDegree(N n) {
-            return this->nodes[n]->outDegree();
+        inline int outDegree(N n) const {
+          return this->nodes[n]->outDegree();
         };
-        inline bool source(N n) {
-            return !this->nodes[n]->inDegree();
+        inline bool source(N n) const {
+          return !this->nodes[n]->inDegree();
         };
-        inline bool sink(N n) {
-            return !this->nodes[n]->outDegree();
+        inline bool sink(N n) const {
+          return !this->nodes[n]->outDegree();
         };
         void reverse(self *g) {
-          for (auto i : this->nodes)
-            g->insertNode();
+          for (auto i : this->nodes) {
+            g->insertNode(i);
+          }
 
-          for (auto i : this->nodes)
-            for (auto j : i.second->edges)
+          for (auto i : this->nodes) {
+            for (auto j : i.second->edges) {
               g->insertEdge(j.first, i.first);
+            }
+          }
         }
         bool strongly_connected() {
             std::stack <N> route;
 						bool *visited = new bool[this->weight()] ();
 
 						for (auto i : this->nodes) {
-								if (!visited[i.first]) {
-                    visited[i.first] = true;
+							if (!visited[i.first]) {
+                visited[i.first] = true;
 
-										this->dfs(i.first,
-											[visited] (N src, N disc) -> void {
-                        visited[disc] = true;
-                      },
-											[] (N src, N vst) -> void {},
-                      [&route] (N node) -> void {
-                        route.push(node);
-								    	});
-								}
+								this->dfs(i.first,
+									[visited] (N src, N disc) -> void {
+                    visited[disc] = true;
+                  },
+									[] (N src, N vst) -> void {},
+                  [&route] (N node) -> void {
+                    route.push(node);
+						      }
+                );
+							}
 						}
 
 
@@ -117,7 +119,7 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
     		void print_edges() {
     			for (auto i : this->nodes) {
     				for (auto j : i.second->edges) {
-  						std::cout << i.first << ' ' << j.first << ' ' << j.second->getData() << std::endl;
+  						std::cout << i.first << ' ' << j.first << ' ' << j.second->weight() << std::endl;
             }
           }
 
