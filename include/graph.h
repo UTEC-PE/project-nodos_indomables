@@ -145,7 +145,7 @@ class Graph {
 		void bfs(N n = 0,
              Search<Method, Types...>&& search = Search<Method, Types...>()) {
 			std::queue <N> root;
-			bool *visited = new bool [this->weight()]();
+			std::map<N, bool> visited;
 
 			root.push(n);
 			visited[n] = true;
@@ -155,7 +155,7 @@ class Graph {
 
 			while (!root.empty()) {
 				for (auto currentNode : this->nodes[root.front()]->edges) {
-					if (!visited[currentNode.first]) {
+					if (visited.find(currentNode.first) == visited.end()) {
 						visited[currentNode.first] = true;
 						root.push(currentNode.first);
 
@@ -169,8 +169,6 @@ class Graph {
 
 				root.pop();
 			}
-
-			delete [] visited;
 		};
     void dfs(N n = 0) {
       this->dfs<Print>(n);
@@ -180,7 +178,7 @@ class Graph {
              Search<Method, Types...>&& search = Search<Method, Types...>()) {
       std::stack <N> root;
       std::stack <EdgeIte> iterators;
-	  	bool *visited = new bool [this->weight()]();
+	  	std::map<N, bool> visited;
 
       root.push(n);
       iterators.push(this->nodes[n]->edges.begin());
@@ -191,7 +189,8 @@ class Graph {
       while (!root.empty()) {
         EdgeIte end = this->nodes[root.top()]->edges.end();
 
-        while (iterators.top() != end && visited[iterators.top()->first]) {
+        while (iterators.top() != end &&
+               visited.find(iterators.top()->first) != visited.end()) {
           search.visit(iterators.top()->first, root.top());
 
           ++iterators.top();
@@ -211,8 +210,6 @@ class Graph {
           iterators.pop();
         }
       }
-
-			delete [] visited;
 		}
 		bool bipartite() {
 			DisjointSet <N> d;
@@ -247,15 +244,21 @@ class Graph {
 
 			return true;
 		};
-		bool connected() {
-			int v = 1;
-
-			this->dfs(this->nodes.begin()->first, [&v] (N src, N disc) -> void {
-				v++;
-			});
-
-			return v == this->weight();
-		};
+		// bool connected() {
+    //   struct Count {
+    //     void operator()(N firstNode, N secondNode, std::tuple<int>& variable) {
+    //       std::get<0>(variable)++;
+    //     }
+    //   };
+    //
+    //   int v = 1;
+    //
+    //   Search<Print, N> search(0);
+    //
+    //   this->dfs<Print, N> (this->nodes.begin()->first);
+    //
+		// 	return search.get(0) == this->weight();
+		// };
 		std::vector <N> componentHeads() {
 			DisjointSet <N> d;
 
@@ -290,11 +293,13 @@ class Graph {
       std::vector<E> distance(this->weight(), -1);
       std::vector<N> previous(this->weight(), -1);
 
+      std::map<N, E> distanceToPrevious;
+
       minHeap.push({initialNode, 0});
       visited[initialNode] = true;
       distance[initialNode] = 0;
 
-      int newGrafNumberOfNodes = 0;
+      int newNumberOfNodes = 0;
 
       while (!minHeap.empty()) {
         N currentNode;
@@ -319,7 +324,7 @@ class Graph {
           }
         }
 
-        newGrafNumberOfNodes++;
+        newNumberOfNodes++;
       }
 
       return distance;
@@ -445,6 +450,44 @@ class Graph {
 
 			return outVector;
 		};
+    std::map<int, std::pair<int, int>> bellmanFord(N initialNode = 0) {
+      typedef std::map<N, std::pair<N, E>> container;
+      typedef typename container::iterator containerIt;
+
+      container previousDistance;
+
+      previousDistance[initialNode] = {initialNode, 0};
+
+      for (auto currentNodeIt : this->nodes) {
+        N currentNode = currentNodeIt.first;
+
+        containerIt currentIt = previousDistance.find(currentNode);
+
+        for (auto neighborNodeIt : currentNodeIt.second->edges) {
+          N neighborNode = neighborNodeIt.first;
+
+          containerIt neighborIt = previousDistance.find(neighborNode);
+          E newDistance = currentIt->second.second + neighborNodeIt.second->weight();
+
+          if (neighborIt == previousDistance.end() || neighborIt->second.second > newDistance) {
+            previousDistance[neighborNode] = {currentNode, newDistance};
+          }
+        }
+      }
+
+      for (auto currentNodeIt : this->nodes) {
+        for (auto neighborNodeIt : currentNodeIt.second->edges) {
+          if (previousDistance[currentNodeIt.first].second >
+              previousDistance[neighborNodeIt.first].second +
+              neighborNodeIt.second->weight()) {
+            // return false;
+          }
+        }
+      }
+
+      // return true;
+      return previousDistance;
+    }
 
     self operator= (self g) {
       return this->g(g);

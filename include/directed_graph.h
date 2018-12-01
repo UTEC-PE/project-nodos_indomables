@@ -41,43 +41,47 @@ class DirectedGraph : public Graph <Tr, DirectedGraph<Tr>> {
           }
         }
 
-        inline int inDegree(N n) {
-            return this->nodes[n]->inDegree();
+        inline int inDegree(N n) const {
+          return this->nodes[n]->inDegree();
         };
-        inline int outDegree(N n) {
-            return this->nodes[n]->outDegree();
+        inline int outDegree(N n) const {
+          return this->nodes[n]->outDegree();
         };
-        inline bool source(N n) {
-            return !this->nodes[n]->inDegree();
+        inline bool source(N n) const {
+          return !this->nodes[n]->inDegree();
         };
-        inline bool sink(N n) {
-            return !this->nodes[n]->outDegree();
+        inline bool sink(N n) const {
+          return !this->nodes[n]->outDegree();
         };
         void reverse(self *g) {
-          for (auto i : this->nodes)
-            g->insertNode();
+          for (auto i : this->nodes) {
+            g->insertNode(i);
+          }
 
-          for (auto i : this->nodes)
-            for (auto j : i.second->edges)
+          for (auto i : this->nodes) {
+            for (auto j : i.second->edges) {
               g->insertEdge(j.first, i.first);
+            }
+          }
         }
         bool strongly_connected() {
             std::stack <N> route;
 						bool *visited = new bool[this->weight()] ();
 
 						for (auto i : this->nodes) {
-								if (!visited[i.first]) {
-                    visited[i.first] = true;
+							if (!visited[i.first]) {
+                visited[i.first] = true;
 
-										this->dfs(i.first,
-											[visited] (N src, N disc) -> void {
-                        visited[disc] = true;
-                      },
-											[] (N src, N vst) -> void {},
-                      [&route] (N node) -> void {
-                        route.push(node);
-								    	});
-								}
+								this->dfs(i.first,
+									[visited] (N src, N disc) -> void {
+                    visited[disc] = true;
+                  },
+									[] (N src, N vst) -> void {},
+                  [&route] (N node) -> void {
+                    route.push(node);
+						      }
+                );
+							}
 						}
 
 

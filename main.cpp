@@ -26,19 +26,29 @@ struct compare {
 
 
 int main(int argc, char *argv[]) {
-  Read<undirectedGraph> r("graph4.txt");
+  Read<directedGraph> r("graph5.txt");
   auto g(r.getGraph());
 
   cout << g << endl;
 
   g.dijkstra(0);
 
-  undirectedGraph h(g);
+  for (auto node : g.aStar(1, 6)) {
+    cout << node << endl;
+  }
 
-  cout << h << endl;
 
-  h.bfs();
-  h.dfs();
+
+  // std::map<int, std::pair<int, int>> m = g.bellmanFord();
+  //
+  // for (auto i : m) {
+  //   cout << i.first << '-' << i.second.first << ' ' << i.second.second << endl;
+  // }
+
+  // h.bfs();
+  // h.dfs();
+
+  // cout << h.connected() << endl;
 
 
 
